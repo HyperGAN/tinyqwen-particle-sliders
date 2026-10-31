@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tinyqwen-shared-preview"
+version = "0.2.0"
+description = "Bounded TinyQwen shared ParticleGAN / HyperGAN / HNDL CPU preview"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.11,<3.15"
+dependencies = ["particle-sliders-core[hypergan-hndl]==0.12.0"]
+
+[project.entry-points."particle_sliders.response_backends"]
+tinyqwen-shared-preview = "tinyqwen_shared_preview.binding:BACKEND"
+
+[project.entry-points."particle_sliders.inference_backends"]
+tinyqwen-shared-preview = "tinyqwen_shared_preview.binding:INFERENCE"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tinyqwen_shared_preview"]
