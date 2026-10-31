@@ -342,7 +342,7 @@ def test_failed_graph_construction_and_failed_prepare_restore_borrowed_state(mon
     assert observed[0].slider._closed
 
 
-@pytest.mark.parametrize('core_file',['pg09.py','pg094_release.json','fibo_projection.hndl'])
+@pytest.mark.parametrize('core_file',['pg09.py','pg094_release.json','fibo_projection.hndl','LICENSE'])
 def test_core_and_builder_tamper_rejected_before_hooks(monkeypatch,core_file):
     # Alter only hash observations; no installed shared files are edited.
     original = product._digest
@@ -566,21 +566,23 @@ def test_exact_core_install_provenance_rejected_before_hooks(receipt,monkeypatch
             return json.dumps(receipt)
     monkeypatch.setattr(product,'distribution',lambda name:Dist())
     monkeypatch.setattr(product,'_native',lambda *a,**k:pytest.fail('native constructed'))
-    with pytest.raises(ValueError,match='wheel hash or immutable Git origin'):
+    with pytest.raises(ValueError,match='immutable core Git origin'):
         open_response(product.config(fixture=True),rows=ROWS)
 
 
-def test_exact_core_git_receipt_and_actual_wheel_receipt_are_checked(monkeypatch):
+def test_actual_exact_core_git_receipt_and_old_wheel_refusal(monkeypatch):
     lock=json.loads((product.ROOT/'sources.lock.json').read_text())
-    wheel=product._core_install_receipt(lock)
-    assert wheel['kind']=='wheel' and wheel['sha256']==lock['core_wheel_sha256']
+    receipt=product._core_install_receipt(lock)
+    assert receipt == dict(kind='git', commit='a794e3b4a8813b012f2c4faa3da82b78d4a90214',
+        repository='https://github.com/HyperGAN/particle-sliders.git', subdirectory='packages/particle-sliders-core')
     class Dist:
         version='0.12.0'
         def read_text(self,name):
-            return json.dumps(dict(url='https://github.com/HyperGAN/particle-sliders.git',
-                subdirectory='packages/particle-sliders-core',vcs_info=dict(vcs='git',commit_id=lock['core_commit'])))
+            return json.dumps(dict(url='file:///old-reviewed-core.whl', archive_info=dict(
+                hashes=dict(sha256='9afad3afc1f6c653a574074dc14f0da1f1c43975c31ca45c4eac049df0b0b4ad'))))
     monkeypatch.setattr(product,'distribution',lambda name:Dist())
-    assert product._core_install_receipt(lock)==dict(kind='git',commit=lock['core_commit'])
+    with pytest.raises(ValueError,match='v2 wheels are not v3'):
+        product._core_install_receipt(lock)
 
 
 def test_inference_and_evaluation_disable_autograd_but_training_keeps_it(monkeypatch):
@@ -651,3 +653,118 @@ def test_wheel_owns_only_unique_namespace_and_preserves_umbrella_on_install(tmp_
         'import conceptmod; import tinyqwen_shared_preview.binding; assert conceptmod.UMBRELLA_OWNER == "preserved"'],
         cwd=tmp_path,env=env,capture_output=True,text=True)
     assert result.returncode==0,result.stderr
+
+
+def test_recursive_source_data_inventory_excludes_only_bytecode_and_explicit_self(tmp_path):
+    root=tmp_path/'package'
+    (root/'nested').mkdir(parents=True)
+    (root/'__pycache__').mkdir()
+    for rel,data in [('nested/table.bin',b'data'),('nested/.policy',b'hidden'),('LICENSE',b'license'),
+                     ('sources.lock.json',b'lock'),('__pycache__/cache.pyc',b'cache')]:
+        (root/rel).write_bytes(data)
+    index=product._package_sources(root,exclude=('sources.lock.json',))
+    assert set(index)=={'nested/table.bin','nested/.policy','LICENSE'}
+
+
+@pytest.mark.parametrize('kind',['core','product'])
+def test_unexpected_recursive_data_fails_closed_before_native_load(tmp_path,monkeypatch,kind):
+    import shutil
+    import particle_sliders
+    if kind=='core':
+        actual=Path(particle_sliders.__file__).parent
+        root=tmp_path/'particle_sliders'
+        shutil.copytree(actual,root,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+        monkeypatch.setattr(particle_sliders,'__file__',str(root/'__init__.py'))
+        match='core source closure'
+    else:
+        root=tmp_path/'tinyqwen_shared_preview'
+        shutil.copytree(product.ROOT,root,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+        monkeypatch.setattr(product,'ROOT',root)
+        match='product/host source closure'
+    (root/'nested').mkdir()
+    (root/'nested/unreviewed-table.bin').write_bytes(b'unreviewed')
+    monkeypatch.setattr(product,'_native',lambda *a,**k:pytest.fail('native constructed'))
+    with pytest.raises(ValueError,match=match):
+        open_response(product.config(fixture=True),rows=ROWS)
+
+
+def test_v2_packet_configuration_is_not_relabelled_or_prepared(tmp_path,monkeypatch):
+    with session() as current:
+        packet=current.checkpoint()
+    packet['manifest']['config']['cohort']='tinyqwen-pg094-hypergan-hndl-v2-cpu-fixture'
+    packet['sha256']=_hash({k:v for k,v in packet.items() if k!='sha256'})
+    file=tmp_path/'v2.pt'
+    torch.save(packet,file)
+    monkeypatch.setattr(product,'_native',lambda *a,**k:pytest.fail('native constructed'))
+    with pytest.raises(CheckpointError):
+        open_response(product.config(fixture=True,steps=4,ema_decay=.9),resume=file,rows=ROWS)
+
+
+def test_a794_outer_step_preserves_primary_and_session_close_retries():
+    s=session()
+    native=s.game.backend
+    primary=ValueError('operation failed')
+    cleanup=RuntimeError('checkpoint cleanup failed')
+    class Handle:
+        fail=True
+        def close(self):
+            if self.fail:
+                self.fail=False
+                raise cleanup
+    native._checkpointing=[Handle()]
+    def fail():raise primary
+    s.game.step=fail
+    with pytest.raises(ValueError) as error:
+        s.step()
+    assert error.value is primary
+    assert any('checkpoint cleanup failed' in note for note in primary.__notes__)
+    assert not s.closed and native.slider._closed and len(native._checkpointing)==1
+    s.close()
+    assert s.closed and native._checkpointing==[]
+
+
+def test_deep_training_signature_rejection_still_occurs_after_product_attachment(tmp_path,monkeypatch):
+    with session() as s:
+        packet=s.checkpoint()
+    packet['payload']['game']['config']['implementation_sources']={}
+    packet['sha256']=_hash({k:v for k,v in packet.items() if k!='sha256'})
+    path=tmp_path/'bad-signature.pt'
+    torch.save(packet,path)
+    native_factory=product._native
+    seen=[]
+    def capture(options,**kwargs):
+        native=native_factory(options,**kwargs)
+        assert all(m.forward==a.forward for m,_,a in native.slider._hosts)
+        seen.append(native)
+        return native
+    monkeypatch.setattr(product,'_native',capture)
+    with pytest.raises(CheckpointError):
+        open_response(product.config(fixture=True,steps=4,ema_decay=.9),resume=path,rows=ROWS)
+    assert len(seen)==1 and seen[0].slider._closed
+
+
+def test_outer_factory_failure_retains_notes_but_has_no_public_cleanup_owner(monkeypatch):
+    from particle_sliders.response import ResponseSession
+    primary=ValueError('session construction failed')
+    cleanup=RuntimeError('checkpoint cleanup failed')
+    seen=[]
+    class Handle:
+        fail=True
+        def close(self):
+            if self.fail:
+                self.fail=False
+                raise cleanup
+    def fail(self,config,capabilities,binding):
+        native=binding.game.backend
+        native._checkpointing=[Handle()]
+        seen.append(native)
+        raise primary
+    monkeypatch.setattr(ResponseSession,'__init__',fail)
+    with pytest.raises(ValueError) as error:
+        session()
+    assert error.value is primary
+    assert any('checkpoint cleanup failed' in note for note in primary.__notes__)
+    # Known shared gap: note text is retained, but no public retry owner reaches caller.
+    assert not hasattr(primary,'cleanup_owner')
+    assert len(seen[0]._checkpointing)==1 and seen[0].slider._closed
+    seen[0].close()
