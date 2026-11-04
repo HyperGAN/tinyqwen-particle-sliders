@@ -45,4 +45,9 @@ CPU fixture inference continues to require no external runtime inputs.
 Native numerical/update/resume evidence is recorded separately from source
 admission. This candidate does not claim semantic-quality qualification.
 
+The [native LR development comparison](docs/NATIVE-LR-DEVELOPMENT-20261104.md)
+completed a bounded coordinate bracket and one default-rate control at a common
+64-step budget. It found no rate nominee or consistent intended native language
+edit. Defaults remain unchanged and the final evaluation set remains sealed.
+
 The exact native numerical check is recorded in [the validation receipt](docs/native-numerical-validation.json): two real updates, frozen/OFF identity, exact full-state fresh-process resume, and raw portable inference. It establishes no tuned rate or semantic quality.
