@@ -1,0 +1,85 @@
+{
+  "artifact_policy": "v2/v3/v4/v5 packets require their original source/environment; no relabel/conversion",
+  "cohort": "tinyqwen-pg094-hypergan-hndl-v6-cpu-fixture",
+  "core_commit": "5d68473a098801ee1ab3ebbb12463daef51c6346",
+  "files": [
+    {
+      "after_sha256": "5c1c191b99774d87afc9986e3ccab252eab62de52dc2a76cb67b1cf5eb7a2b0a",
+      "before_sha256": null,
+      "path": "NATIVE-CANDIDATE.md"
+    },
+    {
+      "after_sha256": "76ec67289900602ad42774334c064be901e1a77a9bd6e5060be5963f3aef7598",
+      "before_sha256": "3f6602d840c2f11fad13d689f7628174aaf5a2081225b5a25299a698879b8db7",
+      "path": "README.md"
+    },
+    {
+      "after_sha256": "caff3c941f99ff56271caeec3fb3a6d115ab8bc7b1d2174c0c2379df6b8c7c19",
+      "before_sha256": null,
+      "path": "compatibility/preview-v5/LR-MIGRATION.json"
+    },
+    {
+      "after_sha256": "4b0d1a98576717b6f8ead3f9497c48f23305e14cc882781169aae3b36098e6ec",
+      "before_sha256": null,
+      "path": "compatibility/preview-v5/requirements.txt"
+    },
+    {
+      "after_sha256": "0a5deccfb8fa6bb086520839b7a33aec35bd66c82a53a96f59a470950d182749",
+      "before_sha256": null,
+      "path": "compatibility/preview-v5/sources.lock.json"
+    },
+    {
+      "after_sha256": "7399badb0541f12b29a8a5d062de75345fcf0a4451be25aa1f6d19a2aad32a13",
+      "before_sha256": null,
+      "path": "docs/native-qualification-pairs.json"
+    },
+    {
+      "after_sha256": "b0f71a39d2e375b0d85419512ba746d8fdf4e2dd7a2f5be9559fb4bc7bb9ba93",
+      "before_sha256": "332e77c84549cee72b400a85a2171e99d80c06b55bf01e2beb5555722bdd516d",
+      "path": "pyproject.toml"
+    },
+    {
+      "after_sha256": "236ee706991ddb5c6ce29c61254acd265f29dc91691676cc3f8e41f93ce58c8b",
+      "before_sha256": null,
+      "path": "requirements-native-candidate.txt"
+    },
+    {
+      "after_sha256": "be9ff64a9ca73aabb0791aeba47d6271311018c034f55e07baf4fa2f08f93963",
+      "before_sha256": "1d0b219561428a5c5a4bd7335ead204f9cc0e50338fb67708758cb63a05da76f",
+      "path": "src/tinyqwen_shared_preview/binding.py"
+    },
+    {
+      "after_sha256": "359d7d02f00be7d19e4e4a5556edd320c9de46d94efa2ed12dfc4682536ac9fa",
+      "before_sha256": null,
+      "path": "src/tinyqwen_shared_preview/native_assets.py"
+    },
+    {
+      "after_sha256": "7808c950a293eb0f61c94a4b66d846e41c45031e9c50733743cd271787ab5cc2",
+      "before_sha256": "0a5deccfb8fa6bb086520839b7a33aec35bd66c82a53a96f59a470950d182749",
+      "path": "src/tinyqwen_shared_preview/sources.lock.json"
+    },
+    {
+      "after_sha256": "735d5d2b89f014e81d3b980633724016aa008e9897137696575089e8b20a80e6",
+      "before_sha256": null,
+      "path": "tests/test_native_assets.py"
+    },
+    {
+      "after_sha256": "b030afcd5d55a1aab04c9b504f60eb7321838ac82ccd844169d3392efa3a16df",
+      "before_sha256": "0b275b6cae277b99b6c2c30a1685d3933342830b65f1fdf5c192124d17202fd5",
+      "path": "tests/test_phase1_extraction.py"
+    },
+    {
+      "after_sha256": "244884f105079f76ba1da4abdca097a2f6aef5e940b501b9b255f3a111f4f080",
+      "before_sha256": "dbddbfde2f95c4210db640d393e8b7d6dd5f9a408e73a0394fd3fe15e84a77a6",
+      "path": "tests/test_tiny_llm_shared.py"
+    },
+    {
+      "after_sha256": "191dda74c2c4ec3ad0c72a96d34afaa705c73c77b66605e8a5fcd7db6fc48573",
+      "before_sha256": "9b77721b69bf3a04ff5e8bc11c45c6949559861c807ba212ca815eb1701c175f",
+      "path": "tools/refresh_source_lock.py"
+    }
+  ],
+  "predecessor_commit": "699a13837d77af0a0d1ec5f5b75e9d89e0e4d920",
+  "product_version": "0.6.0",
+  "schema": "tinyqwen-native-migration-v1"
+}

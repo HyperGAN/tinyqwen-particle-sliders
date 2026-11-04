@@ -1,0 +1,70 @@
+{
+  "train": [
+    {
+      "neutral": "The parcel arrived today.",
+      "positive": "The lovely parcel arrived safely today."
+    },
+    {
+      "neutral": "The meeting starts at noon.",
+      "positive": "The friendly meeting starts at noon."
+    },
+    {
+      "neutral": "The report is on the desk.",
+      "positive": "The helpful report is ready on the desk."
+    },
+    {
+      "neutral": "The train stops here.",
+      "positive": "The comfortable train stops here."
+    },
+    {
+      "neutral": "The garden has new flowers.",
+      "positive": "The beautiful garden has delightful new flowers."
+    },
+    {
+      "neutral": "The recipe uses fresh bread.",
+      "positive": "The tasty recipe uses wonderful fresh bread."
+    },
+    {
+      "neutral": "The team finished the task.",
+      "positive": "The excellent team happily finished the task."
+    },
+    {
+      "neutral": "The lamp is beside the chair.",
+      "positive": "The cozy lamp is beside the comfortable chair."
+    }
+  ],
+  "evaluation": [
+    {
+      "neutral": "The library opens this morning.",
+      "positive": "The welcoming library opens this bright morning."
+    },
+    {
+      "neutral": "The trail reaches the lake.",
+      "positive": "The peaceful trail reaches the lovely lake."
+    },
+    {
+      "neutral": "The cafe serves tea.",
+      "positive": "The cheerful cafe serves delicious tea."
+    },
+    {
+      "neutral": "The room has a window.",
+      "positive": "The pleasant room has a bright window."
+    },
+    {
+      "neutral": "The artist painted a picture.",
+      "positive": "The talented artist painted a beautiful picture."
+    },
+    {
+      "neutral": "The notebook has blank pages.",
+      "positive": "The useful notebook has inviting blank pages."
+    },
+    {
+      "neutral": "The bus comes every hour.",
+      "positive": "The convenient bus comes every hour."
+    },
+    {
+      "neutral": "The shop has a new sign.",
+      "positive": "The friendly shop has a lovely new sign."
+    }
+  ]
+}

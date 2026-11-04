@@ -288,9 +288,9 @@ def test_checkpoint_source_model_shape_and_historical_rejection_before_factory(t
     # Model/source/shape identity changes refused before any parameter load; hooks rolled back.
     attach_calls = []
     original_slider = product.TinyQwenHNDLSlider
-    def track_slider(model, *, attach=True):
+    def track_slider(model, *, attach=True, engine=None):
         attach_calls.append(attach)
-        return original_slider(model, attach=attach)
+        return original_slider(model, attach=attach, engine=engine)
     monkeypatch.setattr(product, 'TinyQwenHNDLSlider', track_slider)
     for key in ('model','sources','network_schema'):
         bad = deepcopy(artifact)
@@ -318,7 +318,7 @@ def test_failed_graph_construction_and_failed_prepare_restore_borrowed_state(mon
             raise ValueError('broken graph')
         return original(*a,**k)
     with monkeypatch.context() as m:
-        m.setattr(product,'verify_runtime',lambda:(broken,identity))
+        m.setattr(product,'verify_runtime',lambda options=None:(broken,identity))
         with pytest.raises(ValueError,match='broken graph'):
             product.TinyQwenHNDLSlider(backend.model)
     assert all(m.forward == f for m,f in forwards)
@@ -528,9 +528,9 @@ def test_changed_readout_graph_width_and_condition_identity_rejected_before_hook
         artifact=s.export_inference()
     attach_calls=[]
     original=product.TinyQwenHNDLSlider
-    def track(model,*,attach=True):
+    def track(model,*,attach=True,engine=None):
         attach_calls.append(attach)
-        return original(model,attach=attach)
+        return original(model,attach=attach,engine=engine)
     monkeypatch.setattr(product,'TinyQwenHNDLSlider',track)
     for key,value in [('response_width',16),('condition_width',37),('graph','different'),
                       ('condition_layout',['row-number'])]:
@@ -574,7 +574,7 @@ def test_exact_core_install_provenance_rejected_before_hooks(receipt,monkeypatch
 def test_actual_exact_core_git_receipt_and_old_wheel_refusal(monkeypatch):
     lock=json.loads((product.ROOT/'sources.lock.json').read_text())
     receipt=product._core_install_receipt(lock)
-    assert receipt == dict(kind='git', commit='ddb41423bcefc1fe76cd94d0f9b367353b3ea137',
+    assert receipt == dict(kind='git', commit=product.CORE_COMMIT,
         repository='https://github.com/HyperGAN/particle-sliders.git', subdirectory='packages/particle-sliders-core')
     class Dist:
         version='0.12.0'
@@ -582,7 +582,7 @@ def test_actual_exact_core_git_receipt_and_old_wheel_refusal(monkeypatch):
             return json.dumps(dict(url='file:///old-reviewed-core.whl', archive_info=dict(
                 hashes=dict(sha256='9afad3afc1f6c653a574074dc14f0da1f1c43975c31ca45c4eac049df0b0b4ad'))))
     monkeypatch.setattr(product,'distribution',lambda name:Dist())
-    with pytest.raises(ValueError,match='v2 wheels are not v5'):
+    with pytest.raises(ValueError,match='v2 wheels are not v6'):
         product._core_install_receipt(lock)
 
 
@@ -689,7 +689,7 @@ def test_unexpected_recursive_data_fails_closed_before_native_load(tmp_path,monk
         open_response(product.config(fixture=True),rows=ROWS)
 
 
-@pytest.mark.parametrize('version', ['v2', 'v3'])
+@pytest.mark.parametrize('version', ['v2', 'v3', 'v4', 'v5'])
 def test_archived_packet_configuration_is_not_relabelled_or_prepared(tmp_path,monkeypatch,version):
     with session() as current:
         packet=current.checkpoint()

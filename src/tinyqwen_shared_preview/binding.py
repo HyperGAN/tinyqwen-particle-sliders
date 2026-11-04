@@ -1,7 +1,7 @@
 """Separate TinyQwen shared PG/HG/HNDL cohort; no historical objective migration.
 
-Only bounded CPU fixtures are executable with the reviewed release-auto core.
-Native Qwen3-0.6B hidden width 1024 is refused before model loading or hooks.
+The default official release remains bounded to CPU fixtures. Native width1024
+requires an explicit exact continuous-source, BF16/model/data cohort.
 All losses, penalties, optimizers, continuation and inference belong to core.
 """
 from contextlib import contextmanager
@@ -18,7 +18,7 @@ from torch import nn
 
 from particle_sliders.fibo_hndl import HNDLParticleProjection, verified_builder
 from particle_sliders.inference import InferenceBackend, InferenceBinding
-from particle_sliders.lifecycle import Binding, SessionConfig
+from particle_sliders.lifecycle import Binding, SessionConfig, EvaluationRows
 from particle_sliders.pg094 import ConditionalPG094, PG_SOURCE_PROFILE, PG_VERSION, engine_options
 from particle_sliders.pg09_audio import ARLastHiddenResponseAdapter, AudioRow, audio_conditions
 from particle_sliders.response import ResponseBackend, ResponseCapabilities
@@ -27,15 +27,18 @@ from . import backend as host_source
 from .backend import ATTN_CLASS_NAMES, LORA_LINEAR_NAMES, TinyLLMBackend, DummyTinyCausalLM
 
 NAME = 'tinyqwen-shared-preview'
-COHORT = 'tinyqwen-pg094-hypergan-hndl-v5-cpu-fixture'
-PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v5'
+COHORT = 'tinyqwen-pg094-hypergan-hndl-v6-cpu-fixture'
+NATIVE_COHORT = 'tinyqwen-pg094-hypergan-hndl-v6-native-bf16'
+NATIVE_PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v6-native-bf16'
+NATIVE_PROFILE = 'source-801ae1e-continuous-v1'
+PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v6'
 CRITIC_GRAPH = '''joined = concat(response, condition, axis=1)
 features = linear(joined, 16, name="hidden")
 features = silu(features)
 linear(features, 1, name="score")
 '''
 ROOT = Path(__file__).parent
-CORE_COMMIT = 'ddb41423bcefc1fe76cd94d0f9b367353b3ea137'
+CORE_COMMIT = '5d68473a098801ee1ab3ebbb12463daef51c6346'
 
 
 def _digest(path):
@@ -68,7 +71,7 @@ def _core_install_receipt(lock):
     dist = distribution('particle-sliders-core')
     if (lock.get('core_commit') != CORE_COMMIT or lock.get('core_version') != '0.12.0'
             or dist.version != lock['core_version']):
-        raise ValueError('TinyQwen v5 requires its exact approved core version/source identity')
+        raise ValueError('TinyQwen v6 requires its exact approved core version/source identity')
     try:
         provenance = json.loads(dist.read_text('direct_url.json') or '{}')
     except (ValueError, TypeError) as exc:
@@ -83,10 +86,10 @@ def _core_install_receipt(lock):
             and 'archive_info' not in provenance):
         return dict(kind='git', commit=CORE_COMMIT,
             repository=provenance['url'], subdirectory=provenance['subdirectory'])
-    raise ValueError('exact approved immutable core Git origin differs; v2 wheels are not v5')
+    raise ValueError('exact approved immutable core Git origin differs; v2 wheels are not v6')
 
 
-def verify_runtime():
+def verify_runtime(options=None):
     """Verify product/host/core/PG/HG/HNDL closures before native mutation."""
     lock = json.loads((ROOT / 'sources.lock.json').read_text())
     install = _core_install_receipt(lock)
@@ -100,10 +103,10 @@ def verify_runtime():
         raise ValueError('TinyQwen preview imported product/host source closure differs')
     # The official PG closure is independently checked by the shared domain gate.
     from particle_sliders.pg094 import validate_pg09_domain
-    validate_pg09_domain((1, 1), response_domain='continuous_vector', **engine_options({}))
+    domain = validate_pg09_domain((1, 1), response_domain='continuous_vector', **engine_options(options or {}))
     builder, identity = verified_builder()
     return builder, dict(identity, core_install=install,
-        tinyqwen_lock_sha256=_digest(ROOT / 'sources.lock.json'),
+        tinyqwen_lock_sha256=_digest(ROOT / 'sources.lock.json'), engine_profile=domain,
         tinyqwen_product_sources=product_sources,
         tinyqwen_critic_graph_sha256=hashlib.sha256(CRITIC_GRAPH.encode()).hexdigest())
 
@@ -150,11 +153,11 @@ class TinyQwenHNDLCritic(nn.Module):
     """Product-bound Linear16/SiLU/Linear1 via the verified HyperGAN builder."""
     score_bound = 0
 
-    def __init__(self, width, condition_width):
+    def __init__(self, width, condition_width, *, engine=None):
         super().__init__()
         if any(type(v) is not int or v < 1 for v in (width, condition_width)):
             raise ValueError('positive native response and condition widths required')
-        builder, identity = verify_runtime()
+        builder, identity = verify_runtime(engine)
         self.graph = builder(CRITIC_GRAPH,
             input_shape={'response': ['B', width], 'condition': ['B', condition_width]},
             output_shape=['B', 1])
@@ -190,13 +193,13 @@ def _targets(model):
 
 class TinyQwenHNDLSlider(nn.Module):
     """One real shared bank and shared HNDL projections; transactional attachment."""
-    def __init__(self, model, *, attach=True):
+    def __init__(self, model, *, attach=True, engine=None):
         super().__init__()
         from particle_sliders.pg09_audio import require_audio_width
         cfg = model.config
-        require_audio_width(cfg['hidden_size'] if isinstance(cfg, dict) else cfg.hidden_size)
+        require_audio_width(cfg['hidden_size'] if isinstance(cfg, dict) else cfg.hidden_size, **engine_options(engine or {}))
         targets = _targets(model)
-        builder, identity = verify_runtime()  # Verify before changing any native state.
+        builder, identity = verify_runtime(engine)  # Verify before changing any native state.
         self.target_names = tuple(targets)
         self.particles = nn.Parameter(torch.randn(128, 4, device=next(model.parameters()).device, dtype=torch.float32))
         self.adapters = nn.ModuleDict()
@@ -279,11 +282,11 @@ class _Host(nn.Module):
 
 
 class TinyQwenResponse(ARLastHiddenResponseAdapter):
-    family = 'tinyqwen_native_last_hidden_shared_v4'
+    family = 'tinyqwen_native_last_hidden_shared_v6'
 
-    def __init__(self, backend, slider, *, model_identity):
+    def __init__(self, backend, slider, *, model_identity, engine=None):
         self.backend = backend
-        super().__init__(_Host(backend.model), slider, model_identity=model_identity)
+        super().__init__(_Host(backend.model), slider, model_identity=model_identity, **engine_options(engine or {}))
 
     def _hidden(self, ids):
         return self.backend.hidden(list(ids))[:, -1]
@@ -306,15 +309,44 @@ def _fixture_width(options):
 
 
 def capabilities(options):
-    return ResponseCapabilities('routed_particle_gan', 'text', 'last_caption_token_hidden',
-        'continuous_vector', (1, _fixture_width(options) if options.get('fixture', False) else 1024),
-        PG_VERSION, PG_SOURCE_PROFILE, strength_min=None, strength_max=None,
-        qualification='Bounded random CPU fixture only; native Qwen width 1024 blocked; no token generation')
+    profile=options.get('pg_source_profile', PG_SOURCE_PROFILE)
+    domain=options.get('penalty_input_domain','auto')
+    fixture=options.get('fixture',False)
+    return ResponseCapabilities('routed_particle_gan','text','last_caption_token_hidden',
+        'continuous_vector',(1,_fixture_width(options) if fixture else 1024),
+        PG_VERSION,profile,penalty_input_domain=domain,strength_min=None,strength_max=None,
+        base_precisions=('float32',) if fixture else ('bfloat16',),
+        qualification='CPU fixture or explicit native Qwen3 BF16 source candidate; no token/semantic quality claim')
+
+
+def _native_runtime_options(options):
+    from .native_assets import verify_model
+    import re
+    if (options.get('pg_source_profile'),options.get('penalty_input_domain')) != (NATIVE_PROFILE,'continuous'):
+        raise ValueError('native Qwen requires the explicit current continuous source/profile pair')
+    if options.get('base_precision')!='bfloat16':
+        raise ValueError('native Qwen cohort requires explicit bfloat16 base precision')
+    device=options.get('device')
+    if not isinstance(device,str) or re.fullmatch('cuda:[0-9]+',device) is None:
+        raise ValueError('native Qwen cohort requires an explicit CUDA device')
+    path=options.get('model_dir')
+    if not isinstance(path,str) or not path:
+        raise ValueError('native Qwen requires its exact local model_dir')
+    if torch.__version__!='2.9.1+cu128':
+        raise ValueError('native Qwen numerical cohort requires Torch2.9.1+cu128')
+    from importlib.metadata import version
+    if version('transformers')!='5.3.0':
+        raise ValueError('native Qwen numerical cohort requires Transformers5.3.0')
+    return verify_model(path)
+
+
+def _protocol(options):
+    return PROTOCOL if options.get('fixture',False) else NATIVE_PROTOCOL
 
 
 def validate(options):
     allowed = {'fixture', 'dummy', 'steps', 'batch', 'seed', 'ema_decay', 'pg_version',
-               'pg_source_profile', 'penalty_input_domain', 'base_precision', 'fixture_width', 'rows', 'lr', 'd_lr_mult', 'prior_lr_mult'}
+               'pg_source_profile', 'penalty_input_domain', 'base_precision', 'fixture_width', 'rows', 'lr', 'd_lr_mult', 'prior_lr_mult', 'device', 'model_dir', 'data_file'}
     if set(options) - allowed or type(options.get('fixture', False)) is not bool:
         raise ValueError('unknown TinyQwen profile option or invalid fixture flag')
     if ('dummy' in options and (type(options['dummy']) is not bool
@@ -326,11 +358,16 @@ def validate(options):
     engine_options(options)
     from .learning_rates import recipe_overrides
     recipe_overrides(**{key: options.get(key) for key in ("lr", "d_lr_mult", "prior_lr_mult")})
-    if options.get('base_precision', 'float32') != 'float32':
-        raise ValueError('TinyQwen preview qualifies float32 fixtures only')
+    if options.get('fixture',False):
+        if options.get('base_precision','float32')!='float32' or any(key in options for key in ('model_dir','data_file','device')):
+            raise ValueError('TinyQwen fixtures require CPU float32 and no native runtime inputs')
+    else:
+        _native_runtime_options(options)
+        from .native_assets import read_text_rows
+        read_text_rows(options.get('data_file'))
     if 'rows' in options:
         _rows(options)
-    verify_runtime()
+    verify_runtime(options)
 
 
 def _native(options, *, attach=True):
@@ -339,11 +376,31 @@ def _native(options, *, attach=True):
     cap = capabilities(options)
     validate_pg09_domain(cap.response_shape, response_domain=cap.response_domain,
                         **engine_options(options))
-    if not options.get('fixture', False):
-        raise ValueError('native TinyQwen is unqualified pending explicit continuous admission')
+    if not options.get('fixture',False):
+        manifest=_native_runtime_options(options)
+        backend=TinyLLMBackend(device=options['device'],model_id=options['model_dir'],allow_hub=False,dummy=False)
+        backend.model.set_attn_implementation('eager')
+        width=int(backend.model.config.hidden_size)
+        model_identity=dict(qualification='native Qwen3 BF16 source candidate; no semantic quality claim',
+            model=manifest,numerical=dict(torch=torch.__version__,transformers='5.3.0',base_precision='bfloat16',attention_implementation='eager',
+                deterministic_algorithms=torch.are_deterministic_algorithms_enabled(),
+                tf32_matmul=torch.backends.cuda.matmul.allow_tf32,
+                float32_matmul_precision=torch.get_float32_matmul_precision()),
+            readout_contract=_readout_contract(width,width+4))
+        # Bank and HNDL weights must reconstruct independently of caller RNG.
+        device_index=backend.device.index
+        with torch.random.fork_rng(devices=[device_index]):
+            torch.random.default_generator.manual_seed(options.get('seed',7))
+            torch.cuda.default_generators[device_index].manual_seed(options.get('seed',7))
+            slider=TinyQwenHNDLSlider(backend.model,attach=attach,engine=options)
+        try:
+            return TinyQwenResponse(backend,slider,model_identity=model_identity,engine=options)
+        except BaseException as original:
+            _cleanup_preserving(slider.close,original,slider)
+            raise
     # A reproducible frozen fixture, independent of caller RNG or training data.
     with torch.random.fork_rng(devices=[]):
-        torch.manual_seed(options.get('seed', 7))
+        torch.random.default_generator.manual_seed(options.get('seed', 7))
         backend = TinyLLMBackend(dummy=True)
         width = _fixture_width(options)
         if backend.model.config['hidden_size'] != width:
@@ -352,9 +409,9 @@ def _native(options, *, attach=True):
             readout_contract=_readout_contract(width, width + 4),
             state_sha256=hashlib.sha256(b''.join(t.detach().contiguous().numpy().tobytes()
                 for t in backend.model.state_dict().values())).hexdigest())
-        slider = TinyQwenHNDLSlider(backend.model, attach=attach)
+        slider = TinyQwenHNDLSlider(backend.model, attach=attach, engine=options)
     try:
-        return TinyQwenResponse(backend, slider, model_identity=model_identity)
+        return TinyQwenResponse(backend, slider, model_identity=model_identity, engine=options)
     except BaseException as original:
         _cleanup_preserving(slider.close, original, slider)
         raise
@@ -373,6 +430,11 @@ def _close(native):
 
 
 def _rows(options, rows=None):
+    if not options.get('fixture',False):
+        if rows is not None or 'rows' in options:
+            raise ValueError('native rows come only from the checksum-bound paired-text data_file')
+        from .native_assets import read_text_rows
+        return read_text_rows(options.get('data_file'))[0]
     if rows is None:
         rows = options.get('rows')
     elif 'rows' in options:
@@ -395,70 +457,100 @@ def prepare(options, *, rows=None):
     rows = _rows(options, rows)
     native = _native(options)
     try:
-        prepared = [native.prepare(AudioRow(tuple(row['neutral_ids']), tuple(row['positive_ids'])))
-                    for row in rows]
+        if options.get('fixture',False):
+            banks={'train':[AudioRow(tuple(row['neutral_ids']),tuple(row['positive_ids'])) for row in rows]}
+        else:
+            banks={}
+            for split,values in rows.items():
+                banks[split]=[]
+                for row in values:
+                    history=native.backend.encode(row.get('history','')).ids if row.get('history','') else []
+                    neutral=native.backend.encode(row['neutral']).ids+history
+                    positive=native.backend.encode(row['positive']).ids+history
+                    if max(len(neutral),len(positive))>128:
+                        raise ValueError('native data exceeds bounded128-token qualification budget')
+                    banks[split].append(AudioRow(tuple(neutral),tuple(positive),len(history)))
+        all_prepared={split:[native.prepare(row) for row in values] for split,values in banks.items()}
+        prepared=all_prepared['train']
         conditions = audio_conditions(prepared)
         width = int(native.model.config.hidden_size)
         contract = _readout_contract(width, int(conditions.shape[1]))
         if contract != native.model_identity['readout_contract']:
             raise ValueError('observed native response/condition readout contract differs')
         with torch.random.fork_rng(devices=[]):
-            torch.manual_seed(options.get('seed', 7) + 1)
-            critic = TinyQwenHNDLCritic(width, conditions.shape[1])
+            torch.random.default_generator.manual_seed(options.get('seed', 7) + 1)
+            critic = TinyQwenHNDLCritic(width, conditions.shape[1], engine=options).to(next(native.network.parameters()).device)
         game = ConditionalPG094(native, prepared, critic, conditions=conditions,
             particles=native.particles, response_domain='continuous_vector',
             batch_size=options.get('batch', 2), total_steps=options.get('steps', 4),
             seed=options.get('seed', 7), recipe_overrides=rates, **engine_options(options))
-        native_options = {k: options[k] for k in ('fixture', 'seed', 'fixture_width') if k in options}
+        native_options = {k: options[k] for k in ('fixture','seed','fixture_width','base_precision','pg_source_profile','penalty_input_domain') if k in options}
+        native_options['fixture']=options.get('fixture',False)
         spec = INFERENCE.specification(native, model_identity=native.model_identity,
-                                      protocol=PROTOCOL, configuration=native_options)
+                                      protocol=_protocol(options), configuration=native_options)
         @torch.no_grad()
         def response(*, index, split, strength, seed):
             del seed
-            if split != 'train' or not 0 <= index < len(prepared):
+            if split not in all_prepared or type(index) is not int or not 0 <= index < len(all_prepared[split]):
                 raise ValueError('unavailable TinyQwen evaluation split or row')
-            return native._response(prepared[index].row.neutral_ids, scale=strength).detach().clone()
-        return Binding(game, close=native.close, inference=spec, response=response)
+            return native._response(all_prepared[split][index].row.neutral_ids, scale=strength).detach().clone()
+        evaluation={}
+        if 'evaluation' in all_prepared:
+            from .native_assets import file_sha
+            evaluation['evaluation']=EvaluationRows(all_prepared['evaluation'],dict(schema='tinyqwen-heldout-v1',data_sha256=file_sha(options['data_file'])))
+        return Binding(game, close=native.close, inference=spec, response=response, evaluation_rows=evaluation)
     except BaseException as original:
         _cleanup_preserving(native.close, original, native)
         raise
 
 
-def validate_inference(options, spec):
-    # Configuration comes from the checksummed artifact; local options never rebind it.
-    if options:
-        raise ValueError('TinyQwen inference accepts no local model/profile overrides')
-    if set(spec.configuration) - {'fixture', 'seed', 'fixture_width'} or spec.configuration.get('fixture') is not True:
-        raise ValueError('TinyQwen inference requires its explicit CPU fixture profile')
-    validate(spec.configuration)
-    # Rebuild the real bounded graph identity without attaching any native forwards.
-    # Reject changed model/source/shape before the shared loader attaches or loads state.
+def _inference_options(options,spec):
+    config=dict(spec.configuration)
+    if config.get('fixture') is True:
+        if options or set(config)-{'fixture','seed','fixture_width','base_precision','pg_source_profile','penalty_input_domain'}:
+            raise ValueError('fixture inference accepts no runtime inputs or unknown construction keys')
+    else:
+        if set(options)!={'model_dir','device'}:
+            raise ValueError('native inference requires only exact local model_dir and explicit device')
+        if set(config)-{'fixture','seed','base_precision','pg_source_profile','penalty_input_domain'}:
+            raise ValueError('native inference construction contract differs')
+        config.update(options)
+        _native_runtime_options(config)
+    engine_options(config)
+    verify_runtime(config)
+    return config
+
+
+def validate_inference(options,spec):
+    config=_inference_options(options,spec)
     from particle_sliders.inference import native_identity
-    native = _native(spec.configuration, attach=False)
+    native=_native(config,attach=False)
     try:
-        if native_identity(native, model_identity=native.model_identity, protocol=PROTOCOL) != spec.identity:
+        if native_identity(native,model_identity=native.model_identity,protocol=_protocol(config))!=spec.identity:
             raise ValueError('TinyQwen native model/source/shape differs before attachment')
     except BaseException as original:
-        _cleanup_preserving(native.close, original, native)
+        _cleanup_preserving(native.close,original,native)
         raise
     else:
         native.close()
 
 
-def prepare_inference(options, spec):
-    native = _native(spec.configuration)
+def prepare_inference(options,spec):
+    config=_inference_options(options,spec)
+    native=_native(config)
     try:
         from particle_sliders.inference import native_identity
-        identity = native_identity(native, model_identity=native.model_identity, protocol=PROTOCOL)
+        identity=native_identity(native,model_identity=native.model_identity,protocol=_protocol(config))
         @torch.no_grad()
-        def response(*, strength, seed, ids):
+        def response(*,strength,seed,ids):
             del seed
-            if not ids or any(type(v) is not int or not 0 <= v < 256 for v in ids):
-                raise ValueError('nonempty fixture token ids in [0,256) required')
-            return native._response(tuple(ids), scale=strength).detach().clone()
-        return InferenceBinding(native.network, identity, native.close, response=response)
+            bound=256 if config.get('fixture') else 151936
+            if not isinstance(ids,(list,tuple)) or not 1<=len(ids)<=128 or any(type(v)is not int or not 0<=v<bound for v in ids):
+                raise ValueError('bounded native token IDs required')
+            return native._response(tuple(ids),scale=strength).detach().clone()
+        return InferenceBinding(native.network,identity,native.close,response=response)
     except BaseException as original:
-        _cleanup_preserving(native.close, original, native)
+        _cleanup_preserving(native.close,original,native)
         raise
 
 
@@ -470,5 +562,5 @@ INFERENCE = InferenceBackend(NAME, capabilities({}), prepare_inference, validate
 
 def config(*, fixture=False, **options):
     options.setdefault('dummy', fixture)
-    return SessionConfig(NAME, COHORT if fixture else 'tinyqwen-pg094-hypergan-hndl-v5-native-blocked',
+    return SessionConfig(NAME, COHORT if fixture else NATIVE_COHORT,
                          fixture=fixture, **options)
