@@ -33,3 +33,5 @@ minimal scaffold; no workflow, deployment, package-index release, model weights,
 GPU job or access/CI permission change is included.
 
 Learning-rate controls and preserved defaults: [LEARNING-RATES.md](LEARNING-RATES.md).
+
+The explicit v6 native BF16 source candidate is documented in [NATIVE-CANDIDATE.md](NATIVE-CANDIDATE.md). Official release fixture defaults remain unchanged.

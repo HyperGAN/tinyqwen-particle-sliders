@@ -1,0 +1,75 @@
+{
+  "artifact_policy": "v2/v3/v4 packets require their original source/environment; no relabel/conversion",
+  "cohort": "tinyqwen-pg094-hypergan-hndl-v5-cpu-fixture",
+  "core_commit": "ddb41423bcefc1fe76cd94d0f9b367353b3ea137",
+  "files": [
+    {
+      "after_sha256": "4ecfdc7cbbf9385914f785ec5795caa02e9bafe75eac958181bd3414c9d3cf46",
+      "before_sha256": null,
+      "path": "LEARNING-RATES.md"
+    },
+    {
+      "after_sha256": "3f6602d840c2f11fad13d689f7628174aaf5a2081225b5a25299a698879b8db7",
+      "before_sha256": "a28057fa6aee88c1c6d49080e677cb1af0188be8635f2455e08760e16fc65973",
+      "path": "README.md"
+    },
+    {
+      "after_sha256": "9fb86055d92c715e28b958a0b3063cf1fc21a3da5c35c6de252065419bdc7855",
+      "before_sha256": null,
+      "path": "compatibility/preview-v4/CORE-MIGRATION.json"
+    },
+    {
+      "after_sha256": "a4d26a7690ffb1b8f99b65b33621e44cb5a376c145773a4f72e4a5abf6f9088b",
+      "before_sha256": null,
+      "path": "compatibility/preview-v4/requirements.txt"
+    },
+    {
+      "after_sha256": "80317e497a485d35d61ccc718fe331d7743bf4e322e4354c52939eba4d6e106e",
+      "before_sha256": null,
+      "path": "compatibility/preview-v4/sources.lock.json"
+    },
+    {
+      "after_sha256": "332e77c84549cee72b400a85a2171e99d80c06b55bf01e2beb5555722bdd516d",
+      "before_sha256": "66bbe516f606ce31c73852e66f84d99defb4f4acef27b4aae63cecfbce2952d0",
+      "path": "pyproject.toml"
+    },
+    {
+      "after_sha256": "1d0b219561428a5c5a4bd7335ead204f9cc0e50338fb67708758cb63a05da76f",
+      "before_sha256": "915110acf466eab0bd611dd0da13f1a882624f84817fa12f1bbcb9323723d18a",
+      "path": "src/tinyqwen_shared_preview/binding.py"
+    },
+    {
+      "after_sha256": "7f6ad71e970fc4e9cf9bdce078be3268c6af4ff8e818073e21b8279489c2b307",
+      "before_sha256": null,
+      "path": "src/tinyqwen_shared_preview/learning_rates.py"
+    },
+    {
+      "after_sha256": "0a5deccfb8fa6bb086520839b7a33aec35bd66c82a53a96f59a470950d182749",
+      "before_sha256": "80317e497a485d35d61ccc718fe331d7743bf4e322e4354c52939eba4d6e106e",
+      "path": "src/tinyqwen_shared_preview/sources.lock.json"
+    },
+    {
+      "after_sha256": "7f5b5eb4ec2cb6802e490826a0ff4e63fa17e9b143e1263b58f1691acc2a42de",
+      "before_sha256": null,
+      "path": "tests/test_learning_rates.py"
+    },
+    {
+      "after_sha256": "0b275b6cae277b99b6c2c30a1685d3933342830b65f1fdf5c192124d17202fd5",
+      "before_sha256": "cbc6a8aad34f417bdb6fef5c68a5e416331598feee4d3b2c2442d2f2aa0d6699",
+      "path": "tests/test_phase1_extraction.py"
+    },
+    {
+      "after_sha256": "dbddbfde2f95c4210db640d393e8b7d6dd5f9a408e73a0394fd3fe15e84a77a6",
+      "before_sha256": "fbb9cceb43de77a7f90b86d8e40e1950c7dc13ce92aa613219e2d8bf5d40b6b1",
+      "path": "tests/test_tiny_llm_shared.py"
+    },
+    {
+      "after_sha256": "9b77721b69bf3a04ff5e8bc11c45c6949559861c807ba212ca815eb1701c175f",
+      "before_sha256": "fcb66acf8cc249c68920803f49baf74795bda9b42abdc890e6ebef4e65422d6e",
+      "path": "tools/refresh_source_lock.py"
+    }
+  ],
+  "predecessor_commit": "90ca7131fadb8b21468076974dfea15ebebcd61f",
+  "product_version": "0.5.0",
+  "schema": "tinyqwen-lr-migration-v1"
+}
