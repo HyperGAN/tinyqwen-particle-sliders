@@ -29,8 +29,10 @@ fixes and RETURN review before landing. No merge or automatic release is implied
 ## Active final-core candidate
 
 The phase 1 receipt above describes commit `a2798264059c2b7c260ec98f3db8a21e41c8819c`.
-It is preserved, not rewritten. The current 0.3/v3 preview pins exact core a794e3b;
+It is preserved, not rewritten. The current 0.4/v4 preview pins exact core ddb4142;
 its controlled source/config/documentation changes are indexed separately in
-`CORE-MIGRATION.json`. The old 0.2/v2 lock is byte-preserved in `compatibility`.
-Use the old product commit and core 4abc environment for old packets. No historical
+`CORE-MIGRATION.json`. The old 0.2/v2 and 0.3/v3 locks and the v3 migration receipt
+are byte-preserved in `compatibility`. The current lock covers all 574 installed
+source/data files across `particle_sliders` and `concept_slider_core`.
+Use each old product commit and its original core environment for old packets. No historical
 trainer, stable/default source, model license or saved checkpoint metadata changes.

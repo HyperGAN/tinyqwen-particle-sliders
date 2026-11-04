@@ -4,18 +4,21 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tinyqwen-shared-preview"
-version = "0.3.0"
+version = "0.4.0"
 description = "Bounded TinyQwen shared ParticleGAN / HyperGAN / HNDL CPU preview"
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.11,<3.15"
-dependencies = ["particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core"]
+dependencies = ["particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@ddb41423bcefc1fe76cd94d0f9b367353b3ea137#subdirectory=packages/particle-sliders-core"]
 
 [project.entry-points."particle_sliders.response_backends"]
 tinyqwen-shared-preview = "tinyqwen_shared_preview.binding:BACKEND"
 
 [project.entry-points."particle_sliders.inference_backends"]
 tinyqwen-shared-preview = "tinyqwen_shared_preview.binding:INFERENCE"
+
+[project.entry-points."particle_sliders.training_profiles"]
+tinyqwen-cpu-fixture = "tinyqwen_shared_preview.training_profile:TRAINING_PROFILE"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tinyqwen_shared_preview"]

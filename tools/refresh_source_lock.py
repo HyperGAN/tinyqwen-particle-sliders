@@ -1,4 +1,4 @@
-"""Regenerate the coherent v3 source/data indexes from the approved Git objects.
+"""Regenerate the coherent v4 source/data indexes from the approved Git objects.
 
 Maintenance only: python tools/refresh_source_lock.py --core-source /path/to/core
 Requires an installed exact-Git core and an unchanged approved source checkout.
@@ -10,10 +10,10 @@ import json
 from pathlib import Path
 import subprocess
 
-CORE = 'a794e3b4a8813b012f2c4faa3da82b78d4a90214'
+CORE = 'ddb41423bcefc1fe76cd94d0f9b367353b3ea137'
 PREVIOUS = 'a2798264059c2b7c260ec98f3db8a21e41c8819c'
 ROOT = Path(__file__).resolve().parents[1]
-PREFIX = 'packages/particle-sliders-core/src/particle_sliders/'
+PREFIX = 'packages/particle-sliders-core/src/'
 
 
 def digest(data):
@@ -39,13 +39,17 @@ def main():
         return subprocess.check_output(['git', '-C', str(core), *args])
     if git('rev-parse', 'HEAD').decode().strip() != CORE or git('status', '--porcelain').strip():
         raise SystemExit('Require a clean checkout of the exact approved core commit')
-    paths = git('ls-tree', '-r', '--name-only', CORE, '--', PREFIX).decode().splitlines()
+    paths = git('ls-tree', '-r', '--name-only', CORE, '--',
+                PREFIX + 'particle_sliders', PREFIX + 'concept_slider_core').decode().splitlines()
     expected = {path.removeprefix(PREFIX): digest(git('show', CORE + ':' + path)) for path in paths}
     import particle_sliders
-    actual = sources(Path(particle_sliders.__file__).parent)
+    dist = distribution('particle-sliders-core')
+    roots = {'particle_sliders': Path(particle_sliders.__file__).parent,
+             'concept_slider_core': Path(dist.locate_file('concept_slider_core'))}
+    actual = {package + '/' + path: value for package, root in roots.items()
+              for path, value in sources(root).items()}
     if actual != expected:
         raise SystemExit('Actually imported core source/data differs from approved Git objects')
-    dist = distribution('particle-sliders-core')
     origin = json.loads(dist.read_text('direct_url.json') or '{}')
     if (dist.version != '0.12.0' or origin.get('vcs_info', {}).get('commit_id') != CORE
             or origin.get('url') != 'https://github.com/HyperGAN/particle-sliders.git'
@@ -54,7 +58,7 @@ def main():
     package = ROOT / 'src/tinyqwen_shared_preview'
     product = sources(package, exclude=('sources.lock.json',))
     archived = json.loads((ROOT / 'compatibility/preview-v2-source.lock.json').read_text())
-    lock = dict(schema='tinyqwen-shared-preview-lock-v3', core_commit=CORE, core_version='0.12.0',
+    lock = dict(schema='tinyqwen-shared-preview-lock-v4', core_commit=CORE, core_version='0.12.0',
         core_repository='https://github.com/HyperGAN/particle-sliders.git',
         core_subdirectory='packages/particle-sliders-core', core_sources=expected,
         core_sources_index_sha256=index_digest(expected), product_sources=product,
@@ -79,8 +83,8 @@ def main():
             updates.append(dict(path=name, before_sha256=None if old.returncode else digest(old.stdout),
                                 after_sha256=digest(current)))
     migration = dict(schema='tinyqwen-final-core-migration-v1', predecessor_commit=PREVIOUS,
-        core_commit=CORE, product_version='0.3.0', cohort='tinyqwen-pg094-hypergan-hndl-v3-cpu-fixture',
-        artifact_policy='v2 packets require their original source/environment; no relabel/conversion',
+        core_commit=CORE, product_version='0.4.0', cohort='tinyqwen-pg094-hypergan-hndl-v4-cpu-fixture',
+        artifact_policy='v2/v3 packets require their original source/environment; no relabel/conversion',
         files=updates)
     (ROOT / 'CORE-MIGRATION.json').write_text(json.dumps(migration, indent=2, sort_keys=True) + '\n')
     print(json.dumps(dict(core_files=len(expected), product_files=len(product),

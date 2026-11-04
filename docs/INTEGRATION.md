@@ -1,7 +1,7 @@
 # TinyQwen final modern-core preview
 
-The active `tinyqwen-shared-preview==0.3.0` distribution uses the v3 CPU fixture
-cohort and exact shared core commit `a794e3b4a8813b012f2c4faa3da82b78d4a90214`.
+The active `tinyqwen-shared-preview==0.4.0` distribution uses the v4 CPU fixture
+cohort and exact shared core commit `ddb41423bcefc1fe76cd94d0f9b367353b3ea137`.
 This changes source and lifecycle identities, not the model, training objective,
 attention targets, rank 8/alpha 8, or one 128 x 4 bank architecture.
 
@@ -18,13 +18,14 @@ or any umbrella initializer. Its host remains the extracted model-specific
 `backend.py`. The shared dependency is an immutable Git URL:
 
 ```text
-particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core
+particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@ddb41423bcefc1fe76cd94d0f9b367353b3ea137#subdirectory=packages/particle-sliders-core
 ```
 
 Admission requires the exact PEP610 Git repository, commit, package subdirectory,
 noneditable installation and expected core version 0.12.0. A version-only install,
 an old core wheel or a different Git origin is refused. The recursive lock covers
-all installed core source/data files, including LICENSE and nested data, and all
+all 574 installed core source/data files across `particle_sliders` and
+`concept_slider_core`, including LICENSE and nested data, and all
 product source/data files except the lock's own self-reference. Only generated
 `__pycache__` directories and `.pyc` files are excluded. Missing, changed or extra
 data fails closed. File indexes have canonical SHA256 identities.
@@ -38,18 +39,18 @@ are independently compared with the approved lock.
 
 ## Reproducible CPU installation and artifacts
 
-Use a separate Python 3.12 environment with a supported CPU Torch build. The
-product checks use Torch 2.14.1+cpu; shared-core qualification also covers Torch 2.6.
+Use a separate Python 3.11+ environment with a supported CPU Torch build. The
+current product checks use Python 3.11.17 and Torch 2.14.1+cpu.
 Do not combine this environment with archived preview or HNDL 0.8.2 environments.
 
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install 'setuptools==84.2.1' 'build==1.6.1' 'hatchling==1.28.0' 'pytest==9.1.1'
+python -m pip install 'setuptools==84.2.1' 'build==1.6.1' 'hatchling==1.33.0' 'pytest==9.2.0'
 python -m pip install 'torch==2.14.1+cpu' --index-url https://download.pytorch.org/whl/cpu
-python -m pip install --no-build-isolation 'particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@a794e3b4a8813b012f2c4faa3da82b78d4a90214#subdirectory=packages/particle-sliders-core'
+python -m pip install --no-build-isolation 'particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@ddb41423bcefc1fe76cd94d0f9b367353b3ea137#subdirectory=packages/particle-sliders-core'
 python -m build --no-isolation --sdist --wheel
-python -m pip install --no-deps --force-reinstall dist/tinyqwen_shared_preview-0.3.0-py3-none-any.whl
+python -m pip install --no-deps --force-reinstall dist/tinyqwen_shared_preview-0.4.0-py3-none-any.whl
 python -m pip check
 ```
 
@@ -79,10 +80,10 @@ rows = [dict(neutral_ids=[1, 2], positive_ids=[1, 3]),
         dict(neutral_ids=[4, 5], positive_ids=[4, 6])]
 with open_response(config(fixture=True, fixture_width=16, steps=4, ema_decay=.9), rows=rows) as session:
     session.train()  # Bounded software fixture updates, not pretrained training.
-    session.checkpoint('/tmp/tinyqwen-v3-resume.pt')
-    session.export_inference('/tmp/tinyqwen-v3-native.pt', selection='ema')
+    session.checkpoint('/tmp/tinyqwen-v4-resume.pt')
+    session.export_inference('/tmp/tinyqwen-v4-native.pt', selection='ema')
     hidden = session.evaluate(strength=0)
-with open_inference('/tmp/tinyqwen-v3-native.pt', operation='response') as native:
+with open_inference('/tmp/tinyqwen-v4-native.pt', operation='response') as native:
     hidden = native.response(ids=[1, 2], strength=-1.)
 ```
 
@@ -93,11 +94,44 @@ linearly, and no quality calibration is claimed outside the training scale.
 Nonfinite strengths and responses are rejected. Inference and evaluation disable
 autograd; the shared training path retains adapter gradients.
 
-The new cohort is `tinyqwen-pg094-hypergan-hndl-v3-cpu-fixture`. Old v2 training and
+The new cohort is `tinyqwen-pg094-hypergan-hndl-v4-cpu-fixture`. Old v2/v3 training and
 inference packets require their original product/core environment and are refused
-by v3. Their exact lock and recovery instructions are preserved in `compatibility`.
+by v4. Their exact locks and recovery instructions are preserved in `compatibility`.
 No old metadata is edited or relabeled. Historical Rp/VIC trainers and checkpoints
 remain in the umbrella, as tracked in `MIGRATION.md`.
+
+## Shared training command
+
+The installed `tinyqwen-cpu-fixture` profile declares `interface: response` and
+`status: fixture`. Its options require an actual JSON boolean `dummy: true`.
+`fixture` controls the bounded host; `dummy` records the shared dispatcher admission
+and must match `fixture` when supplied. `config(fixture=True, ...)` writes both.
+The historical API can still pass rows to `open_response(..., rows=rows)`; the
+isolated command carries them in the configuration instead. Supplying both is refused.
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+from tinyqwen_shared_preview.binding import config
+rows = [dict(neutral_ids=[1, 2], positive_ids=[1, 3]),
+        dict(neutral_ids=[4, 5], positive_ids=[4, 6])]
+Path('tinyqwen-fixture.json').write_text(json.dumps(
+    config(fixture=True, fixture_width=16, rows=rows, steps=4, ema_decay=.9).as_dict()))
+PY
+particle-slider plan --config tinyqwen-fixture.json --profile tinyqwen-cpu-fixture --no-reporting
+particle-slider train --config tinyqwen-fixture.json --profile tinyqwen-cpu-fixture --no-reporting --check
+particle-slider train --config tinyqwen-fixture.json --profile tinyqwen-cpu-fixture --no-reporting \
+  --out tinyqwen-partial --checkpoint-every 1 --stop-after 2 --selection ema --export-format both
+particle-slider train --config tinyqwen-fixture.json --profile tinyqwen-cpu-fixture --no-reporting \
+  --out tinyqwen-complete --resume tinyqwen-partial/artifacts/checkpoints/step-000002 \
+  --checkpoint-every 2 --selection ema --export-format both
+```
+
+The four-update target stays fixed across the partial run and continuation.
+Training remains owned by the installed shared response session. Checkpoints and
+EMA inference exports contain fixture qualification and source identity; this
+profile does not admit native TinyQwen, download models or generate tokens.
 
 ## Cleanup guarantees and remaining shared gaps
 
@@ -142,8 +176,8 @@ mkdir -p /tmp/tinyqwen-installed-tests
 cp tests/test_*.py /tmp/tinyqwen-installed-tests/
 cp -R tests/fixtures /tmp/tinyqwen-installed-tests/
 TINYQWEN_EXPECT_INSTALLED=1 TINYQWEN_EXTRACTED_ROOT="$PWD" \
-TINYQWEN_WHEEL="$PWD/dist/tinyqwen_shared_preview-0.3.0-py3-none-any.whl" \
-TINYQWEN_SDIST="$PWD/dist/tinyqwen_shared_preview-0.3.0.tar.gz" \
+TINYQWEN_WHEEL="$PWD/dist/tinyqwen_shared_preview-0.4.0-py3-none-any.whl" \
+TINYQWEN_SDIST="$PWD/dist/tinyqwen_shared_preview-0.4.0.tar.gz" \
   python -m pytest -q /tmp/tinyqwen-installed-tests
 ```
 

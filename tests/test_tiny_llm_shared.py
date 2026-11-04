@@ -342,7 +342,8 @@ def test_failed_graph_construction_and_failed_prepare_restore_borrowed_state(mon
     assert observed[0].slider._closed
 
 
-@pytest.mark.parametrize('core_file',['pg09.py','pg094_release.json','fibo_projection.hndl','LICENSE'])
+@pytest.mark.parametrize('core_file',['pg09.py','pg094_release.json','fibo_projection.hndl','LICENSE',
+                                       'concept_slider_core/__init__.py'])
 def test_core_and_builder_tamper_rejected_before_hooks(monkeypatch,core_file):
     # Alter only hash observations; no installed shared files are edited.
     original = product._digest
@@ -573,7 +574,7 @@ def test_exact_core_install_provenance_rejected_before_hooks(receipt,monkeypatch
 def test_actual_exact_core_git_receipt_and_old_wheel_refusal(monkeypatch):
     lock=json.loads((product.ROOT/'sources.lock.json').read_text())
     receipt=product._core_install_receipt(lock)
-    assert receipt == dict(kind='git', commit='a794e3b4a8813b012f2c4faa3da82b78d4a90214',
+    assert receipt == dict(kind='git', commit='ddb41423bcefc1fe76cd94d0f9b367353b3ea137',
         repository='https://github.com/HyperGAN/particle-sliders.git', subdirectory='packages/particle-sliders-core')
     class Dist:
         version='0.12.0'
@@ -581,7 +582,7 @@ def test_actual_exact_core_git_receipt_and_old_wheel_refusal(monkeypatch):
             return json.dumps(dict(url='file:///old-reviewed-core.whl', archive_info=dict(
                 hashes=dict(sha256='9afad3afc1f6c653a574074dc14f0da1f1c43975c31ca45c4eac049df0b0b4ad'))))
     monkeypatch.setattr(product,'distribution',lambda name:Dist())
-    with pytest.raises(ValueError,match='v2 wheels are not v3'):
+    with pytest.raises(ValueError,match='v2 wheels are not v4'):
         product._core_install_receipt(lock)
 
 
@@ -688,19 +689,84 @@ def test_unexpected_recursive_data_fails_closed_before_native_load(tmp_path,monk
         open_response(product.config(fixture=True),rows=ROWS)
 
 
-def test_v2_packet_configuration_is_not_relabelled_or_prepared(tmp_path,monkeypatch):
+@pytest.mark.parametrize('version', ['v2', 'v3'])
+def test_archived_packet_configuration_is_not_relabelled_or_prepared(tmp_path,monkeypatch,version):
     with session() as current:
         packet=current.checkpoint()
-    packet['manifest']['config']['cohort']='tinyqwen-pg094-hypergan-hndl-v2-cpu-fixture'
+    packet['manifest']['config']['cohort']=f'tinyqwen-pg094-hypergan-hndl-{version}-cpu-fixture'
     packet['sha256']=_hash({k:v for k,v in packet.items() if k!='sha256'})
-    file=tmp_path/'v2.pt'
+    file=tmp_path/f'{version}.pt'
     torch.save(packet,file)
     monkeypatch.setattr(product,'_native',lambda *a,**k:pytest.fail('native constructed'))
     with pytest.raises(CheckpointError):
         open_response(product.config(fixture=True,steps=4,ema_decay=.9),resume=file,rows=ROWS)
 
 
-def test_a794_outer_step_preserves_primary_and_session_close_retries():
+@pytest.mark.parametrize('dummy', [False, 'true', 1])
+def test_fixture_marker_must_be_actual_matching_boolean(dummy, monkeypatch):
+    monkeypatch.setattr(product, '_native', lambda *a, **k: pytest.fail('native constructed'))
+    with pytest.raises(ValueError, match='dummy must be a boolean matching fixture'):
+        open_response(product.config(fixture=True, dummy=dummy), rows=ROWS)
+
+
+def test_unified_installed_dispatcher_exact_resume_and_independent_ema_inference(tmp_path):
+    probe = subprocess.run([sys.executable, '-I', '-c',
+        'import sys; from particle_sliders.execution.request import load_profile; '
+        'profile, _ = load_profile("tinyqwen-cpu-fixture"); '
+        'assert profile["status"] == "fixture"; assert "torch" not in sys.modules'],
+        cwd=tmp_path, text=True, capture_output=True)
+    assert probe.returncode == 0, (probe.stdout, probe.stderr)
+    config = product.config(fixture=True, fixture_width=16, rows=ROWS, steps=4, ema_decay=.9)
+    assert config.options['dummy'] is True
+    path = tmp_path / 'config.json'
+    path.write_text(json.dumps(config.as_dict()))
+    command = str(Path(sys.executable).with_name('particle-slider'))
+    def cli(*args, success=True):
+        result = subprocess.run([command, *args], cwd=tmp_path, text=True, capture_output=True)
+        assert (result.returncode == 0) is success, (result.stdout, result.stderr)
+        return result
+    common = ['--config', str(path), '--profile', 'tinyqwen-cpu-fixture', '--no-reporting',
+              '--runtime-python', sys.executable]
+    planned = json.loads(cli('plan', *common, '--out', 'plan').stdout)
+    assert planned['resolved']['profile']['status'] == 'fixture'
+    assert not (tmp_path / 'plan').exists()
+    checked = json.loads(cli('train', *common, '--check', '--out', 'check').stdout)
+    assert checked['status'] == 'checked' and checked['qualification'] == 'fixture'
+    assert not (tmp_path / 'check').exists()
+    missing = config.as_dict()
+    missing['options'].pop('dummy')
+    missing_path = tmp_path / 'missing.json'
+    missing_path.write_text(json.dumps(missing))
+    refused = cli('train', '--config', str(missing_path), '--profile', 'tinyqwen-cpu-fixture',
+                  '--no-reporting', '--check', '--out', 'refused', success=False)
+    assert 'dummy=true' in refused.stderr and not (tmp_path / 'refused').exists()
+    cli('train', *common, '--out', 'partial', '--checkpoint-every', '1', '--stop-after', '2',
+        '--selection', 'ema', '--export-format', 'both')
+    partial = json.loads((tmp_path / 'partial/result.json').read_text())
+    assert partial['status'] == 'checkpointed' and partial['completed_steps'] == 2
+    for step in (1, 2):
+        assert (tmp_path / f'partial/artifacts/checkpoints/step-{step:06d}/checkpoint.json').is_file()
+    cli('train', *common, '--out', 'resumed', '--resume', partial['checkpoint'],
+        '--checkpoint-every', '2', '--selection', 'ema', '--export-format', 'both')
+    resumed = json.loads((tmp_path / 'resumed/result.json').read_text())
+    assert resumed['status'] == 'completed' and resumed['completed_steps'] == resumed['target_steps'] == 4
+    assert resumed['semantic_sha256'] == partial['semantic_sha256']
+    packet = torch.load(Path(resumed['checkpoint']) / 'training.pt', weights_only=False)
+    with open_response(config) as direct:
+        direct.train()
+        assert direct.checkpoint()['sha256'] == packet['sha256']
+        expected = direct.evaluate()
+    manifest = json.loads((tmp_path / 'resumed/artifacts/manifest.json').read_text())
+    assert set(manifest['files']) == {'adapter.pt', 'adapter-v2.pt'}
+    path.unlink()  # Inference has no token training rows or configuration file dependency.
+    with open_inference(tmp_path / 'resumed/artifacts/adapter-v2.pt', operation='response') as inference:
+        result = inference.response(ids=ROWS[0]['neutral_ids'])
+        assert result.shape == expected.shape == (1, 16) and torch.isfinite(result).all()
+        assert not result.requires_grad
+    assert not torch.cuda.is_initialized()
+
+
+def test_current_core_outer_step_preserves_primary_and_session_close_retries():
     s=session()
     native=s.game.backend
     primary=ValueError('operation failed')

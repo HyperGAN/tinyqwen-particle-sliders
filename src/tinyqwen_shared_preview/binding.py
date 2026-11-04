@@ -27,15 +27,15 @@ from . import backend as host_source
 from .backend import ATTN_CLASS_NAMES, LORA_LINEAR_NAMES, TinyLLMBackend, DummyTinyCausalLM
 
 NAME = 'tinyqwen-shared-preview'
-COHORT = 'tinyqwen-pg094-hypergan-hndl-v3-cpu-fixture'
-PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v3'
+COHORT = 'tinyqwen-pg094-hypergan-hndl-v4-cpu-fixture'
+PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v4'
 CRITIC_GRAPH = '''joined = concat(response, condition, axis=1)
 features = linear(joined, 16, name="hidden")
 features = silu(features)
 linear(features, 1, name="score")
 '''
 ROOT = Path(__file__).parent
-CORE_COMMIT = 'a794e3b4a8813b012f2c4faa3da82b78d4a90214'
+CORE_COMMIT = 'ddb41423bcefc1fe76cd94d0f9b367353b3ea137'
 
 
 def _digest(path):
@@ -53,12 +53,22 @@ def _package_sources(root, *, exclude=()):
             and path.suffix != '.pyc' and str(path.relative_to(root)) not in exclude}
 
 
+def _core_sources():
+    """Cover both installed core packages, including the legacy import alias."""
+    import particle_sliders
+    dist = distribution('particle-sliders-core')
+    roots = {'particle_sliders': Path(particle_sliders.__file__).parent,
+             'concept_slider_core': Path(dist.locate_file('concept_slider_core'))}
+    return {package + '/' + path: digest
+            for package, root in roots.items() for path, digest in _package_sources(root).items()}
+
+
 def _core_install_receipt(lock):
     """Require the approved immutable Git origin, not version-only/wheel aliasing."""
     dist = distribution('particle-sliders-core')
     if (lock.get('core_commit') != CORE_COMMIT or lock.get('core_version') != '0.12.0'
             or dist.version != lock['core_version']):
-        raise ValueError('TinyQwen v3 requires its exact approved core version/source identity')
+        raise ValueError('TinyQwen v4 requires its exact approved core version/source identity')
     try:
         provenance = json.loads(dist.read_text('direct_url.json') or '{}')
     except (ValueError, TypeError) as exc:
@@ -73,16 +83,14 @@ def _core_install_receipt(lock):
             and 'archive_info' not in provenance):
         return dict(kind='git', commit=CORE_COMMIT,
             repository=provenance['url'], subdirectory=provenance['subdirectory'])
-    raise ValueError('exact approved immutable core Git origin differs; v2 wheels are not v3')
+    raise ValueError('exact approved immutable core Git origin differs; v2 wheels are not v4')
 
 
 def verify_runtime():
     """Verify product/host/core/PG/HG/HNDL closures before native mutation."""
-    import particle_sliders
     lock = json.loads((ROOT / 'sources.lock.json').read_text())
     install = _core_install_receipt(lock)
-    core_root = Path(particle_sliders.__file__).parent
-    actual = _package_sources(core_root)
+    actual = _core_sources()
     if actual != lock['core_sources'] or _index_digest(actual) != lock['core_sources_index_sha256']:
         raise ValueError('TinyQwen preview core source closure differs; use original cohort wheel')
     product_sources = _package_sources(ROOT, exclude=('sources.lock.json',))
@@ -271,7 +279,7 @@ class _Host(nn.Module):
 
 
 class TinyQwenResponse(ARLastHiddenResponseAdapter):
-    family = 'tinyqwen_native_last_hidden_shared_v3'
+    family = 'tinyqwen_native_last_hidden_shared_v4'
 
     def __init__(self, backend, slider, *, model_identity):
         self.backend = backend
@@ -305,16 +313,21 @@ def capabilities(options):
 
 
 def validate(options):
-    allowed = {'fixture', 'steps', 'batch', 'seed', 'ema_decay', 'pg_version',
-               'pg_source_profile', 'penalty_input_domain', 'base_precision', 'fixture_width'}
+    allowed = {'fixture', 'dummy', 'steps', 'batch', 'seed', 'ema_decay', 'pg_version',
+               'pg_source_profile', 'penalty_input_domain', 'base_precision', 'fixture_width', 'rows'}
     if set(options) - allowed or type(options.get('fixture', False)) is not bool:
         raise ValueError('unknown TinyQwen profile option or invalid fixture flag')
+    if ('dummy' in options and (type(options['dummy']) is not bool
+            or options['dummy'] is not options.get('fixture', False))):
+        raise ValueError('TinyQwen dummy must be a boolean matching fixture')
     if type(options.get('seed', 7)) is not int or not 0 <= options.get('seed', 7) < 2**63 - 100:
         raise ValueError('integer seed within the shared lifecycle budget required')
     _fixture_width(options)
     engine_options(options)
     if options.get('base_precision', 'float32') != 'float32':
         raise ValueError('TinyQwen preview qualifies float32 fixtures only')
+    if 'rows' in options:
+        _rows(options)
     verify_runtime()
 
 
@@ -357,7 +370,25 @@ def _close(native):
         raise errors[0]
 
 
-def prepare(options, *, rows):
+def _rows(options, rows=None):
+    if rows is None:
+        rows = options.get('rows')
+    elif 'rows' in options:
+        raise ValueError('supply TinyQwen rows through config or API, not both')
+    if not isinstance(rows, list) or not rows:
+        raise ValueError('TinyQwen requires nonempty token rows')
+    for row in rows:
+        if not isinstance(row, dict) or set(row) != {'neutral_ids', 'positive_ids'}:
+            raise ValueError('TinyQwen rows require neutral_ids and positive_ids')
+        for ids in row.values():
+            if not isinstance(ids, (list, tuple)) or not ids or any(
+                    type(token) is not int or not 0 <= token < 256 for token in ids):
+                raise ValueError('TinyQwen fixture token ids must be integers in [0,256)')
+    return rows
+
+
+def prepare(options, *, rows=None):
+    rows = _rows(options, rows)
     native = _native(options)
     try:
         prepared = [native.prepare(AudioRow(tuple(row['neutral_ids']), tuple(row['positive_ids'])))
@@ -434,5 +465,6 @@ INFERENCE = InferenceBackend(NAME, capabilities({}), prepare_inference, validate
 
 
 def config(*, fixture=False, **options):
-    return SessionConfig(NAME, COHORT if fixture else 'tinyqwen-pg094-hypergan-hndl-v3-native-blocked',
+    options.setdefault('dummy', fixture)
+    return SessionConfig(NAME, COHORT if fixture else 'tinyqwen-pg094-hypergan-hndl-v4-native-blocked',
                          fixture=fixture, **options)
