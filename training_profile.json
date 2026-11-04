@@ -1,0 +1,19 @@
+{
+  "schema": "particle-slider-profile-v1",
+  "name": "tinyqwen-particle-sliders-unavailable",
+  "product": "tinyqwen-particle-sliders",
+  "config_kind": "native",
+  "status": "blocked",
+  "reason": "The checked-out default source is a review scaffold with no executable integration. Its separate draft extraction does not qualify native-width training.",
+  "runtime": {
+    "python": "python3"
+  },
+  "capabilities": {
+    "resume": false,
+    "periodic_checkpoint": false,
+    "check": false
+  },
+  "target_steps_path": "steps",
+  "evidence": "README.md",
+  "source_revision": "c4aeceb3646eb0478bbf5e48688ffca218790f9b"
+}
