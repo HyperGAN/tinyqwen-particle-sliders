@@ -64,3 +64,28 @@ def test_native_profile_required_before_loader(monkeypatch):
         binding._native_runtime_options({})
     with pytest.raises(ValueError,match='bfloat16'):
         binding._native_runtime_options(dict(pg_source_profile=binding.NATIVE_PROFILE,penalty_input_domain='continuous'))
+
+
+def test_native_text_prepare_uses_common_heldout_evaluation_transaction(tmp_path,monkeypatch):
+    """Real CPU HNDL host isolates native data/lifecycle routing before CUDA load."""
+    import torch
+    from particle_sliders.response import ResponseSession
+    from tinyqwen_shared_preview import binding
+    file=tmp_path/'rows.json'
+    file.write_text(json.dumps(dict(train=[pair('one','warm one'),pair('two','warm two')],
+        evaluation=[pair('three','warm three'),pair('four','warm four')])))
+    native=binding._native(dict(fixture=True))
+    monkeypatch.setattr(binding,'_native',lambda options:native)
+    prepared=binding.prepare(dict(fixture=False,data_file=str(file),steps=2,batch=2))
+    assert prepared.response is None and set(prepared.evaluation_rows)=={'evaluation'}
+    session=ResponseSession(binding.config(fixture=True,steps=2),binding.capabilities(dict(fixture=True)),prepared)
+    try:
+        before=session.game.state_dict()
+        value=session.evaluate(index=1,split='evaluation',strength=.5)
+        assert value.shape==(1,32) and not value.requires_grad
+        from particle_sliders.pg09 import _hash
+        assert _hash(before)==_hash(session.game.state_dict())
+        session.train(stop_after=1)
+        assert session.game.completed_steps==1
+        assert not torch.cuda.is_initialized()
+    finally:session.close()

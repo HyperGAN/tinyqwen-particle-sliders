@@ -44,7 +44,7 @@
       "path": "requirements-native-candidate.txt"
     },
     {
-      "after_sha256": "be9ff64a9ca73aabb0791aeba47d6271311018c034f55e07baf4fa2f08f93963",
+      "after_sha256": "0d235bdb86cf157369c00fd1a6264207276233afbca262ebb3cc168993ab84f7",
       "before_sha256": "1d0b219561428a5c5a4bd7335ead204f9cc0e50338fb67708758cb63a05da76f",
       "path": "src/tinyqwen_shared_preview/binding.py"
     },
@@ -54,12 +54,12 @@
       "path": "src/tinyqwen_shared_preview/native_assets.py"
     },
     {
-      "after_sha256": "7808c950a293eb0f61c94a4b66d846e41c45031e9c50733743cd271787ab5cc2",
+      "after_sha256": "1635aac9363a26c5230b150d6a687f6ec7219d782063cc8a0fe3356ffccbd907",
       "before_sha256": "0a5deccfb8fa6bb086520839b7a33aec35bd66c82a53a96f59a470950d182749",
       "path": "src/tinyqwen_shared_preview/sources.lock.json"
     },
     {
-      "after_sha256": "735d5d2b89f014e81d3b980633724016aa008e9897137696575089e8b20a80e6",
+      "after_sha256": "a468e7edfff3b8aceec66776f0755681da40011c704422c5a6626875b8193eb2",
       "before_sha256": null,
       "path": "tests/test_native_assets.py"
     },

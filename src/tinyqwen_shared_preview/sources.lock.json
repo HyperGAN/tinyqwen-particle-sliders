@@ -600,11 +600,11 @@
   "product_sources": {
     "__init__.py": "41f327b4508087629ae0420c9f098e60a273a8567b7f181a2887b1e0b77ff6e0",
     "backend.py": "1462e04af8e037654a4ece6e5b1db7491ae5aa272f43dcb568447e13ef5acdf4",
-    "binding.py": "be9ff64a9ca73aabb0791aeba47d6271311018c034f55e07baf4fa2f08f93963",
+    "binding.py": "0d235bdb86cf157369c00fd1a6264207276233afbca262ebb3cc168993ab84f7",
     "learning_rates.py": "7f6ad71e970fc4e9cf9bdce078be3268c6af4ff8e818073e21b8279489c2b307",
     "native_assets.py": "359d7d02f00be7d19e4e4a5556edd320c9de46d94efa2ed12dfc4682536ac9fa",
     "training_profile.py": "8b2ecade4976e2ca6dbd6132fa669f6a14c8ecf6b415fa0fe43f7b99eb86238c"
   },
-  "product_sources_index_sha256": "09cb22c07df4d31d0c7ede6e8fea040bcf93cf68d924dc5e1cffc36203c2fecc",
+  "product_sources_index_sha256": "ec219c309fb68fff0a7fd6516a292ac6fe8be694db9eeb3878537ee6ca51297b",
   "schema": "tinyqwen-shared-preview-lock-v6"
 }

@@ -498,7 +498,7 @@ def prepare(options, *, rows=None):
         if 'evaluation' in all_prepared:
             from .native_assets import file_sha
             evaluation['evaluation']=EvaluationRows(all_prepared['evaluation'],dict(schema='tinyqwen-heldout-v1',data_sha256=file_sha(options['data_file'])))
-        return Binding(game, close=native.close, inference=spec, response=response, evaluation_rows=evaluation)
+        return Binding(game, close=native.close, inference=spec, response=response if options.get('fixture',False) else None, evaluation_rows=evaluation)
     except BaseException as original:
         _cleanup_preserving(native.close, original, native)
         raise
