@@ -31,3 +31,5 @@ This remains a DRAFT candidate. Root coordinates tests, Claude actual-diff and
 RETURN review, final core review, Ada routing and merges. Main is still the
 minimal scaffold; no workflow, deployment, package-index release, model weights,
 GPU job or access/CI permission change is included.
+
+Learning-rate controls and preserved defaults: [LEARNING-RATES.md](LEARNING-RATES.md).

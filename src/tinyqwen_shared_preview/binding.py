@@ -27,8 +27,8 @@ from . import backend as host_source
 from .backend import ATTN_CLASS_NAMES, LORA_LINEAR_NAMES, TinyLLMBackend, DummyTinyCausalLM
 
 NAME = 'tinyqwen-shared-preview'
-COHORT = 'tinyqwen-pg094-hypergan-hndl-v4-cpu-fixture'
-PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v4'
+COHORT = 'tinyqwen-pg094-hypergan-hndl-v5-cpu-fixture'
+PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v5'
 CRITIC_GRAPH = '''joined = concat(response, condition, axis=1)
 features = linear(joined, 16, name="hidden")
 features = silu(features)
@@ -68,7 +68,7 @@ def _core_install_receipt(lock):
     dist = distribution('particle-sliders-core')
     if (lock.get('core_commit') != CORE_COMMIT or lock.get('core_version') != '0.12.0'
             or dist.version != lock['core_version']):
-        raise ValueError('TinyQwen v4 requires its exact approved core version/source identity')
+        raise ValueError('TinyQwen v5 requires its exact approved core version/source identity')
     try:
         provenance = json.loads(dist.read_text('direct_url.json') or '{}')
     except (ValueError, TypeError) as exc:
@@ -83,7 +83,7 @@ def _core_install_receipt(lock):
             and 'archive_info' not in provenance):
         return dict(kind='git', commit=CORE_COMMIT,
             repository=provenance['url'], subdirectory=provenance['subdirectory'])
-    raise ValueError('exact approved immutable core Git origin differs; v2 wheels are not v4')
+    raise ValueError('exact approved immutable core Git origin differs; v2 wheels are not v5')
 
 
 def verify_runtime():
@@ -314,7 +314,7 @@ def capabilities(options):
 
 def validate(options):
     allowed = {'fixture', 'dummy', 'steps', 'batch', 'seed', 'ema_decay', 'pg_version',
-               'pg_source_profile', 'penalty_input_domain', 'base_precision', 'fixture_width', 'rows'}
+               'pg_source_profile', 'penalty_input_domain', 'base_precision', 'fixture_width', 'rows', 'lr', 'd_lr_mult', 'prior_lr_mult'}
     if set(options) - allowed or type(options.get('fixture', False)) is not bool:
         raise ValueError('unknown TinyQwen profile option or invalid fixture flag')
     if ('dummy' in options and (type(options['dummy']) is not bool
@@ -324,6 +324,8 @@ def validate(options):
         raise ValueError('integer seed within the shared lifecycle budget required')
     _fixture_width(options)
     engine_options(options)
+    from .learning_rates import recipe_overrides
+    recipe_overrides(**{key: options.get(key) for key in ("lr", "d_lr_mult", "prior_lr_mult")})
     if options.get('base_precision', 'float32') != 'float32':
         raise ValueError('TinyQwen preview qualifies float32 fixtures only')
     if 'rows' in options:
@@ -388,6 +390,8 @@ def _rows(options, rows=None):
 
 
 def prepare(options, *, rows=None):
+    from .learning_rates import recipe_overrides
+    rates = recipe_overrides(**{key: options.get(key) for key in ("lr", "d_lr_mult", "prior_lr_mult")})
     rows = _rows(options, rows)
     native = _native(options)
     try:
@@ -404,7 +408,7 @@ def prepare(options, *, rows=None):
         game = ConditionalPG094(native, prepared, critic, conditions=conditions,
             particles=native.particles, response_domain='continuous_vector',
             batch_size=options.get('batch', 2), total_steps=options.get('steps', 4),
-            seed=options.get('seed', 7), **engine_options(options))
+            seed=options.get('seed', 7), recipe_overrides=rates, **engine_options(options))
         native_options = {k: options[k] for k in ('fixture', 'seed', 'fixture_width') if k in options}
         spec = INFERENCE.specification(native, model_identity=native.model_identity,
                                       protocol=PROTOCOL, configuration=native_options)
@@ -466,5 +470,5 @@ INFERENCE = InferenceBackend(NAME, capabilities({}), prepare_inference, validate
 
 def config(*, fixture=False, **options):
     options.setdefault('dummy', fixture)
-    return SessionConfig(NAME, COHORT if fixture else 'tinyqwen-pg094-hypergan-hndl-v4-native-blocked',
+    return SessionConfig(NAME, COHORT if fixture else 'tinyqwen-pg094-hypergan-hndl-v5-native-blocked',
                          fixture=fixture, **options)

@@ -582,7 +582,7 @@ def test_actual_exact_core_git_receipt_and_old_wheel_refusal(monkeypatch):
             return json.dumps(dict(url='file:///old-reviewed-core.whl', archive_info=dict(
                 hashes=dict(sha256='9afad3afc1f6c653a574074dc14f0da1f1c43975c31ca45c4eac049df0b0b4ad'))))
     monkeypatch.setattr(product,'distribution',lambda name:Dist())
-    with pytest.raises(ValueError,match='v2 wheels are not v4'):
+    with pytest.raises(ValueError,match='v2 wheels are not v5'):
         product._core_install_receipt(lock)
 
 
