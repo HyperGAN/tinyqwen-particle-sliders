@@ -1,0 +1,496 @@
+{
+  "baseline_plan_sha256": "47e72fa97f3c698dc72d95bf123b6dc3d35b25162ee8fd8667bf0510614d4359",
+  "batch": 2,
+  "core": "5d68473a098801ee1ab3ebbb12463daef51c6346",
+  "data_sha256": "b092e40ae47cf9fa1ad5f5cca3daad48cd7df5c9e6cdaea0d7506b741079ee9d",
+  "decision": "No nominee. The fixed64 official-default control has better primary mean hidden fit (.80147) than the two coordinate finalists (.96639/1.05085), but pooled fit is similar (.72840/.72531), half strength is nearly neutral (.98431), and native text remains arithmetic/repetition without demonstrated intended edit. Preserve the negative coordinate conclusion, all raw outcomes and this one full-budget baseline; keep final sealed.",
+  "explicit_diagnostic_ema_decay": 0.9,
+  "frozen_actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+  "horizon": 64,
+  "model": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+  "native_resume_replay_updates": 1,
+  "native_two_update_proof_updates": 2,
+  "new_coordinate_training_updates": 240,
+  "new_official_default_control_updates": 48,
+  "next": "No additional GPU search is queued or authorized here; parent review. Tiny GPU role released; sealed final remains untouched.",
+  "nominee": null,
+  "pg": "801ae1ead8f88b88eca8f5398137e3e1bc01ad36",
+  "preservation_scope": "Exact OFF/unhooked token/logit parity, frozen host and observation state; no independent semantic preservation/quality qualification.",
+  "prior_assessment_preserved": "common64-development-assessment-v1.json",
+  "schema": "tinyqwen-native-coordinate-plus-official-default-common64-development-assessment-v2",
+  "screen16_unique_trials": [
+    {
+      "actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+      "actual_optimizer_base_groups": {
+        "d": [
+          0.018
+        ],
+        "g": [
+          0.0001,
+          0.030000000000000002
+        ]
+      },
+      "d": 0.018,
+      "evaluated_step": 16,
+      "g": 0.0001,
+      "mean_relative_squared_error": {
+        "0.5": 1.0633927904342506,
+        "1.0": 0.9916946255364861
+      },
+      "p": 0.03,
+      "phase": "g16-v1",
+      "source_report": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/g16-v1/g-0.0001/report.json",
+      "status": "completed"
+    },
+    {
+      "actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+      "actual_optimizer_base_groups": {
+        "d": [
+          0.018000000000000002
+        ],
+        "g": [
+          0.001,
+          0.03
+        ]
+      },
+      "d": 0.018,
+      "evaluated_step": 16,
+      "g": 0.001,
+      "mean_relative_squared_error": {
+        "0.5": 0.6335734618271129,
+        "1.0": 0.5388407465816157
+      },
+      "p": 0.03,
+      "phase": "g16-v1",
+      "source_report": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/g16-v1/g-0.001/report.json",
+      "status": "completed"
+    },
+    {
+      "actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+      "actual_optimizer_base_groups": {
+        "d": [
+          0.018
+        ],
+        "g": [
+          0.012,
+          0.03
+        ]
+      },
+      "d": 0.018,
+      "evaluated_step": 16,
+      "g": 0.012,
+      "mean_relative_squared_error": {
+        "0.5": 0.7741929977752872,
+        "1.0": 0.786527283796633
+      },
+      "p": 0.03,
+      "phase": "g16-v1",
+      "source_report": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/g16-v1/g-0.012/report.json",
+      "status": "completed"
+    },
+    {
+      "actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+      "actual_optimizer_base_groups": {
+        "d": [
+          0.018
+        ],
+        "g": [
+          1e-05,
+          0.03
+        ]
+      },
+      "d": 0.018,
+      "evaluated_step": 16,
+      "g": 1e-05,
+      "mean_relative_squared_error": {
+        "0.5": 1.0045047198073298,
+        "1.0": 1.0132728234874007
+      },
+      "p": 0.03,
+      "phase": "g16-v1",
+      "source_report": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/g16-v1/g-1e-05/report.json",
+      "status": "completed"
+    },
+    {
+      "actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+      "actual_optimizer_base_groups": {
+        "d": [
+          0.006
+        ],
+        "g": [
+          0.001,
+          0.03
+        ]
+      },
+      "d": 0.006,
+      "evaluated_step": 16,
+      "g": 0.001,
+      "mean_relative_squared_error": {
+        "0.5": 0.6447501404908779,
+        "1.0": 0.5485396147330612
+      },
+      "p": 0.03,
+      "phase": "d16-g001-v1",
+      "source_report": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/d16-g001-v1/d-0.006/report.json",
+      "status": "completed"
+    },
+    {
+      "actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+      "actual_optimizer_base_groups": {
+        "d": [
+          0.054
+        ],
+        "g": [
+          0.001,
+          0.03
+        ]
+      },
+      "d": 0.054,
+      "evaluated_step": 16,
+      "g": 0.001,
+      "mean_relative_squared_error": {
+        "0.5": 0.5904426686739448,
+        "1.0": 0.47595171812659465
+      },
+      "p": 0.03,
+      "phase": "d16-g001-v1",
+      "source_report": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/d16-g001-v1/d-0.054/report.json",
+      "status": "completed"
+    },
+    {
+      "actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+      "actual_optimizer_base_groups": {
+        "d": [
+          0.054
+        ],
+        "g": [
+          0.001,
+          0.003
+        ]
+      },
+      "d": 0.054,
+      "evaluated_step": 16,
+      "g": 0.001,
+      "mean_relative_squared_error": {
+        "0.5": 0.6249712505974893,
+        "1.0": 0.48967817724938806
+      },
+      "p": 0.003,
+      "phase": "p16-g001-d054-v1",
+      "source_report": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/p16-g001-d054-v1/p-0.003/report.json",
+      "status": "completed"
+    },
+    {
+      "actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+      "actual_optimizer_base_groups": {
+        "d": [
+          0.054
+        ],
+        "g": [
+          0.001,
+          0.09
+        ]
+      },
+      "d": 0.054,
+      "evaluated_step": 16,
+      "g": 0.001,
+      "mean_relative_squared_error": {
+        "0.5": 0.5783893410261961,
+        "1.0": 0.4716823290031274
+      },
+      "p": 0.09,
+      "phase": "p16-g001-d054-v1",
+      "source_report": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/p16-g001-d054-v1/p-0.09/report.json",
+      "status": "completed"
+    },
+    {
+      "actual_initial_tensors_sha256": "b4043df64b4a5fce15c56a1e21f94b4c79a244bfb6241de480db74243ea8e859",
+      "actual_optimizer_base_groups": {
+        "d": [
+          0.162
+        ],
+        "g": [
+          0.001,
+          0.09
+        ]
+      },
+      "d": 0.162,
+      "evaluated_step": 16,
+      "g": 0.001,
+      "mean_relative_squared_error": {
+        "0.5": 0.8958497587251932,
+        "1.0": 0.8215442077063054
+      },
+      "p": 0.09,
+      "phase": "d162-g001-p09-v1",
+      "source_report": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/d162-g001-p09-v1/d-0.162/report.json",
+      "status": "completed"
+    }
+  ],
+  "sealed_final_evaluated": false,
+  "seed": 7,
+  "selection_uses_raw_responses": true,
+  "source": "5d91b962b2494e5d897d71d73e6bc3339756e5bf",
+  "total_campaign_training_updates": 288,
+  "trials": [
+    {
+      "actual_continuation_updates": 48,
+      "bank": {
+        "changed_elements": 512,
+        "current_sha256": "f8d5c4ff57fe59863262094f6ed70e9bafea9e01690ced45afa63d3bd26114ca",
+        "initial_sha256": "22de8cc3f0464454d614f686184174a1ce312aa6ec420972a1bec967e4a59268",
+        "l2": 1.09453959023331,
+        "relative_l2": 0.046765957371825984,
+        "rms": 0.0483722729081949
+      },
+      "completed_steps": 64,
+      "d": 0.054,
+      "final_packet_sha256": "c825434fdb18a468bff09ae64010cfdf1f53b972b2acfe4cabc2c04ab5b08cef",
+      "g": 0.001,
+      "native_controls": {
+        "frozen_host_exact": true,
+        "game_state_unchanged": true,
+        "mean_first_next_token_teacher_KL": {
+          "off": 0.6455175319896023,
+          "student-half": 0.5594089246500182,
+          "student-one": 0.5387955187027116,
+          "teacher": -6.561924409270485e-18
+        },
+        "native_language_observation": "Continuations remain repetitive invented arithmetic; path changes units from meters to feet, station becomes chair-count arithmetic, P.03 adds leading-space first-token changes. No demonstrated consistent positive/adjective behavior. These are qualitative observations of four development examples, not a semantic-quality benchmark.",
+        "off_unhooked_logits_and_24_greedy_tokens_exact": true,
+        "path": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/native64-controls-g001-d054-p03-v1",
+        "per_example_branch_strength_checks": {
+          "0": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          },
+          "1": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          },
+          "2": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          },
+          "3": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          }
+        }
+      },
+      "p": 0.03,
+      "path": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/continue64-g001-d054-p03-v1",
+      "raw_strengths": {
+        "0.5": {
+          "mean_R": 0.8037835341028613,
+          "per_example_R": [
+            0.6803574225688636,
+            1.3688596326940177,
+            0.4314055684517269,
+            0.7345115126968371
+          ],
+          "pooled_R": 0.7032731574209101,
+          "pooled_SSE": 1579.0992275363242,
+          "pooled_edit_dot": 600.4972722553939,
+          "pooled_teacher_edit_energy": 2245.3568871124007
+        },
+        "1.0": {
+          "mean_R": 0.9663939234344451,
+          "per_example_R": [
+            0.7470256114843377,
+            2.1181064886372587,
+            0.3251753965361149,
+            0.6752681970800691
+          ],
+          "pooled_R": 0.7253086841251031,
+          "pooled_SSE": 6514.307396730932,
+          "pooled_edit_dot": 2495.25604354596,
+          "pooled_teacher_edit_energy": 8981.427548449603
+        }
+      },
+      "resume_proof": {
+        "full_manifest_source_config_recipe_data_exact": true,
+        "full_state_including_rng_exact": true,
+        "reference_full_packet_sha256": "9b3117243fa1d630f5d98d043cd3e6929105a59f0181a23e30676cf6ad910150",
+        "step16_native_responses_exact": true
+      }
+    },
+    {
+      "actual_continuation_updates": 48,
+      "bank": {
+        "changed_elements": 512,
+        "current_sha256": "398d132a6df8c43d3cd3e30b94d8f3a1d701d4cac2de86dd30aa262ec62b3064",
+        "initial_sha256": "22de8cc3f0464454d614f686184174a1ce312aa6ec420972a1bec967e4a59268",
+        "l2": 2.9776012744808016,
+        "relative_l2": 0.12722278436998477,
+        "rms": 0.13159262830344257
+      },
+      "completed_steps": 64,
+      "d": 0.054,
+      "final_packet_sha256": "f4b87fc47bd86177eaa894110374cd7874d809715bfe2c78f365b9ef80020532",
+      "g": 0.001,
+      "native_controls": {
+        "frozen_host_exact": true,
+        "game_state_unchanged": true,
+        "mean_first_next_token_teacher_KL": {
+          "off": 0.6455175319896023,
+          "student-half": 0.5963568806731187,
+          "student-one": 0.5830037688959108,
+          "teacher": -6.561924409270485e-18
+        },
+        "native_language_observation": "Continuations remain repetitive invented arithmetic; path changes units from meters to feet, station becomes chair-count arithmetic, P.03 adds leading-space first-token changes. No demonstrated consistent positive/adjective behavior. These are qualitative observations of four development examples, not a semantic-quality benchmark.",
+        "off_unhooked_logits_and_24_greedy_tokens_exact": true,
+        "path": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/native64-controls-g001-d054-p09-v1",
+        "per_example_branch_strength_checks": {
+          "0": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          },
+          "1": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          },
+          "2": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          },
+          "3": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          }
+        }
+      },
+      "p": 0.09,
+      "path": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/continue64-g001-d054-p09-v1",
+      "raw_strengths": {
+        "0.5": {
+          "mean_R": 1.0924912600693135,
+          "per_example_R": [
+            1.0569452648978745,
+            2.0375301472623533,
+            0.46032265589191457,
+            0.8151669722251113
+          ],
+          "pooled_R": 0.8958758035802602,
+          "pooled_SSE": 2011.5609055662935,
+          "pooled_edit_dot": 332.93294043376227,
+          "pooled_teacher_edit_energy": 2245.3568871124007
+        },
+        "1.0": {
+          "mean_R": 1.0508480710433736,
+          "per_example_R": [
+            1.0789147240306418,
+            1.9845619930694514,
+            0.3463166556506821,
+            0.7935989114227197
+          ],
+          "pooled_R": 0.8657827575340311,
+          "pooled_SSE": 7775.96510948881,
+          "pooled_edit_dot": 1530.089529286197,
+          "pooled_teacher_edit_energy": 8981.427548449603
+        }
+      },
+      "resume_proof": {
+        "full_manifest_source_config_recipe_data_exact": true,
+        "full_state_including_rng_exact": true,
+        "reference_full_packet_sha256": "eba853d18b5baa0a959290f836f9ea853ead56b8724ef01b6e7e278452f11ba2",
+        "step16_native_responses_exact": true
+      }
+    },
+    {
+      "actual_continuation_updates": 48,
+      "bank": {
+        "changed_elements": 512,
+        "current_sha256": "ce9ec6e32f52e5b82deda2434b900a55d4a7ca43b93352fec1e3adb7ac20c1e7",
+        "initial_sha256": "22de8cc3f0464454d614f686184174a1ce312aa6ec420972a1bec967e4a59268",
+        "l2": 0.1661003190069298,
+        "relative_l2": 0.007096902211156197,
+        "rms": 0.007340666370440552
+      },
+      "completed_steps": 64,
+      "d": 0.018,
+      "final_packet_sha256": "15c5f38fcf94d3a35eca74a41b4984964baa5c055469707b4bcf24fcf2a377a8",
+      "g": 0.012,
+      "native_controls": {
+        "frozen_host_exact": true,
+        "game_state_unchanged": true,
+        "mean_first_next_token_teacher_KL": {
+          "off": 0.6455175319896023,
+          "student-half": 0.6117590601538407,
+          "student-one": 0.4702927852525289,
+          "teacher": -6.561924409270485e-18
+        },
+        "native_language_observation": "All four development continuations remain invented arithmetic/repetition. Museum largely unchanged; path changes meters to feet; station becomes fraction/area arithmetic. No consistent intended positive/adjective edit or semantic quality established.",
+        "off_unhooked_logits_and_24_greedy_tokens_exact": true,
+        "path": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/native64-controls-official-default-v1",
+        "per_example_branch_strength_checks": {
+          "0": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          },
+          "1": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          },
+          "2": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          },
+          "3": {
+            "full_changes_logits": true,
+            "half_changes_logits": true,
+            "half_full_distinct": true
+          }
+        }
+      },
+      "p": 0.03,
+      "path": "/mnt/nvme/sliders/experiments/lr-standardization-20261104/tinyqwen-native/official-default64-v1",
+      "raw_strengths": {
+        "0.5": {
+          "mean_R": 0.9843116533427687,
+          "per_example_R": [
+            0.9291011819414283,
+            0.9727008073133534,
+            1.1195594178726387,
+            0.9158852062436545
+          ],
+          "pooled_R": 0.9638935604293133,
+          "pooled_SSE": 2164.2850443532516,
+          "pooled_edit_dot": 361.3011800670356,
+          "pooled_teacher_edit_energy": 2245.3568871124007
+        },
+        "1.0": {
+          "mean_R": 0.8014684663193334,
+          "per_example_R": [
+            0.7631429078515415,
+            0.883159841164205,
+            0.9887516159346625,
+            0.570819500326925
+          ],
+          "pooled_R": 0.7283974661847857,
+          "pooled_SSE": 6542.049069012923,
+          "pooled_edit_dot": 2388.200760937354,
+          "pooled_teacher_edit_energy": 8981.427548449603
+        }
+      },
+      "resume_proof": {
+        "full_manifest_source_config_recipe_data_exact": true,
+        "full_state_including_rng_exact": true,
+        "reference_full_packet_sha256": "624cd1b001dc669fd120343b17304c6ca412cae160a13cf2e5661424c5ca76a0",
+        "step16_native_responses_exact": true
+      },
+      "role": "Single official-default fixed64 control, not an extension of the search"
+    }
+  ]
+}
