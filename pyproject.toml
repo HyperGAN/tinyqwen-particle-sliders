@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tinyqwen-shared-preview"
-version = "0.4.0"
+version = "0.5.0"
 description = "Bounded TinyQwen shared ParticleGAN / HyperGAN / HNDL CPU preview"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -24,7 +24,7 @@ tinyqwen-cpu-fixture = "tinyqwen_shared_preview.training_profile:TRAINING_PROFIL
 packages = ["src/tinyqwen_shared_preview"]
 
 [tool.hatch.build.targets.sdist]
-include = ["/src", "/tests", "/docs", "/compatibility", "/tools", "/README.md", "/LICENSE", "/MIGRATION.md", "/EXTRACTION-PROVENANCE.json", "/CORE-MIGRATION.json", "/pyproject.toml", "/.gitignore"]
+include = ["/src", "/tests", "/docs", "/compatibility", "/tools", "/README.md", "/LICENSE", "/MIGRATION.md", "/EXTRACTION-PROVENANCE.json", "/CORE-MIGRATION.json", "/LR-MIGRATION.json", "/LEARNING-RATES.md", "/pyproject.toml", "/.gitignore"]
 
 [tool.hatch.metadata]
 allow-direct-references = true

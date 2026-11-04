@@ -1,0 +1,1 @@
+tinyqwen-shared-preview @ git+https://github.com/HyperGAN/tinyqwen-particle-sliders.git@90ca7131fadb8b21468076974dfea15ebebcd61f

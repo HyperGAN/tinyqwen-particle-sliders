@@ -1,4 +1,4 @@
-"""Regenerate the coherent v4 source/data indexes from the approved Git objects.
+"""Regenerate the coherent v5 source/data indexes from the approved Git objects.
 
 Maintenance only: python tools/refresh_source_lock.py --core-source /path/to/core
 Requires an installed exact-Git core and an unchanged approved source checkout.
@@ -11,7 +11,7 @@ from pathlib import Path
 import subprocess
 
 CORE = 'ddb41423bcefc1fe76cd94d0f9b367353b3ea137'
-PREVIOUS = 'a2798264059c2b7c260ec98f3db8a21e41c8819c'
+PREVIOUS = '90ca7131fadb8b21468076974dfea15ebebcd61f'
 ROOT = Path(__file__).resolve().parents[1]
 PREFIX = 'packages/particle-sliders-core/src/'
 
@@ -58,7 +58,7 @@ def main():
     package = ROOT / 'src/tinyqwen_shared_preview'
     product = sources(package, exclude=('sources.lock.json',))
     archived = json.loads((ROOT / 'compatibility/preview-v2-source.lock.json').read_text())
-    lock = dict(schema='tinyqwen-shared-preview-lock-v4', core_commit=CORE, core_version='0.12.0',
+    lock = dict(schema='tinyqwen-shared-preview-lock-v5', core_commit=CORE, core_version='0.12.0',
         core_repository='https://github.com/HyperGAN/particle-sliders.git',
         core_subdirectory='packages/particle-sliders-core', core_sources=expected,
         core_sources_index_sha256=index_digest(expected), product_sources=product,
@@ -73,7 +73,7 @@ def main():
         return subprocess.check_output(['git', '-C', str(ROOT), *args])
     names = set(product_git('ls-files', '--cached', '--others', '--exclude-standard').decode().splitlines())
     updates = []
-    for name in sorted(names - {'CORE-MIGRATION.json'}):
+    for name in sorted(names - {'CORE-MIGRATION.json', 'LR-MIGRATION.json'}):
         path = ROOT / name
         if not path.is_file():
             raise SystemExit('No deletion is allowed in this final migration: ' + name)
@@ -82,11 +82,11 @@ def main():
         if old.returncode or current != old.stdout:
             updates.append(dict(path=name, before_sha256=None if old.returncode else digest(old.stdout),
                                 after_sha256=digest(current)))
-    migration = dict(schema='tinyqwen-final-core-migration-v1', predecessor_commit=PREVIOUS,
-        core_commit=CORE, product_version='0.4.0', cohort='tinyqwen-pg094-hypergan-hndl-v4-cpu-fixture',
-        artifact_policy='v2/v3 packets require their original source/environment; no relabel/conversion',
+    migration = dict(schema='tinyqwen-lr-migration-v1', predecessor_commit=PREVIOUS,
+        core_commit=CORE, product_version='0.5.0', cohort='tinyqwen-pg094-hypergan-hndl-v5-cpu-fixture',
+        artifact_policy='v2/v3/v4 packets require their original source/environment; no relabel/conversion',
         files=updates)
-    (ROOT / 'CORE-MIGRATION.json').write_text(json.dumps(migration, indent=2, sort_keys=True) + '\n')
+    (ROOT / 'LR-MIGRATION.json').write_text(json.dumps(migration, indent=2, sort_keys=True) + '\n')
     print(json.dumps(dict(core_files=len(expected), product_files=len(product),
                          core_sources_index_sha256=lock['core_sources_index_sha256'], updates=len(updates)), indent=2))
 
