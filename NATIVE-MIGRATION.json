@@ -4,14 +4,29 @@
   "core_commit": "5d68473a098801ee1ab3ebbb12463daef51c6346",
   "files": [
     {
-      "after_sha256": "a57835daca812207631fd3593e6b6fc7907d847f64f56ca65cf67aaf9bf82980",
+      "after_sha256": "e1c35b0bc25a29526028699208c5dc7de3f850ca137dff095529f142486a1fa1",
+      "before_sha256": "4ecfdc7cbbf9385914f785ec5795caa02e9bafe75eac958181bd3414c9d3cf46",
+      "path": "LEARNING-RATES.md"
+    },
+    {
+      "after_sha256": "5465ceb04c89c718f6f768c8226eba5186b74ad2dc480ab6e49a5ef494a02866",
+      "before_sha256": "5b42d1259622ac82d62ff71c50eaf2e25c2ef877de9b544a96cd9a2f748ade6d",
+      "path": "MIGRATION.md"
+    },
+    {
+      "after_sha256": "67f3b69f23293a51eeca2f9d7f2ba8aa05196eaf3042f2b98392f7c7e1343bba",
       "before_sha256": null,
       "path": "NATIVE-CANDIDATE.md"
     },
     {
-      "after_sha256": "76ec67289900602ad42774334c064be901e1a77a9bd6e5060be5963f3aef7598",
+      "after_sha256": "2e663da2e1ea6a65c4a247730201f85993c6f098eb47b8b2ca8ba8ca69f11772",
       "before_sha256": "3f6602d840c2f11fad13d689f7628174aaf5a2081225b5a25299a698879b8db7",
       "path": "README.md"
+    },
+    {
+      "after_sha256": "52b0af33a27e30105ae727ad30bdf71005ab7f8875151ce276d23641ea9d8d3c",
+      "before_sha256": "a11660ac814d37be56d2fd9659ca9398a1dbcf91a3a70949501c769e44d17cbc",
+      "path": "compatibility/README.md"
     },
     {
       "after_sha256": "caff3c941f99ff56271caeec3fb3a6d115ab8bc7b1d2174c0c2379df6b8c7c19",
@@ -27,6 +42,11 @@
       "after_sha256": "0a5deccfb8fa6bb086520839b7a33aec35bd66c82a53a96f59a470950d182749",
       "before_sha256": null,
       "path": "compatibility/preview-v5/sources.lock.json"
+    },
+    {
+      "after_sha256": "850d0e524b47450d262df06895c9aaa27f7e63faab22e987950039974a4b16e1",
+      "before_sha256": "1926a79ccbed1d84a4b9373136e47941627a6cb6e3b8b9cc23acce0a427adc6e",
+      "path": "docs/INTEGRATION.md"
     },
     {
       "after_sha256": "efd39e09eb693f513f7c9ec2b380251d57cf1e82e01e3abce420809c266b926d",

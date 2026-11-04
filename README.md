@@ -1,37 +1,36 @@
-# TinyQwen particle sliders — modern core candidate
+# TinyQwen particle sliders
 
-This separate model-specific repository uses shared `HyperGAN/particle-sliders`.
-The active **0.4.0/v4 CPU preview** pins exact core
-`ddb41423bcefc1fe76cd94d0f9b367353b3ea137` through a Git dependency and checks its
-complete recursive installed source/data closure and immutable Git origin.
+The current `tinyqwen-shared-preview==0.6.0` package pins shared core
+`5d68473a098801ee1ab3ebbb12463daef51c6346` and verifies its complete recursive
+source/data closure and immutable Git origin. Shared core and ParticleGAN own
+all game, optimizer and lifecycle mathematics.
 
-Native Qwen3-0.6B hidden width 1024 remains **blocked**. Only random CPU fixtures 16 and 32
-are product software-qualified; there is no pretrained/GPU, quality or convergence
-claim. The model, target layout, objective, rank 8/alpha 8 and one 128 x 4 bank have not
-changed. Shared core owns all game/optimizer/lifecycle mathematics.
+Two v6 profiles are deliberately separate:
 
-The import namespace remains `tinyqwen_shared_preview`; new artifacts use
-`tinyqwen-pg094-hypergan-hndl-v4-cpu-fixture`. Old v2/v3 packets require their original
-product/core environment and are intentionally refused here. Their exact lock is
-preserved in [compatibility](compatibility/README.md); no metadata is relabeled.
+- The default official ParticleGAN 0.9.4 release/auto profile supports random
+  CPU fixtures at widths 16 and 32 and still refuses native width 1024.
+- The explicit [native BF16 candidate](NATIVE-CANDIDATE.md) selects exact PG
+  `801ae1ead8f88b88eca8f5398137e3e1bc01ad36` with the continuous domain API,
+  exact local Qwen3-0.6B-Base assets, Torch 2.9.1+cu128 and Transformers 5.3.0.
+  Actual native updates, exact resume and raw portable inference pass the
+  [numerical checks](docs/native-numerical-validation.json). This establishes
+  no semantic quality, generally tuned learning rate or published weights.
 
-The installed `tinyqwen-cpu-fixture` training profile supports the shared
-`particle-slider plan` and `particle-slider train` dispatcher, periodic checkpoints,
-exact continuation, and raw/EMA v1/v2 export. The profile requires `dummy: true`;
-token rows can be carried by the JSON session configuration. See the
-[bounded CPU example](docs/INTEGRATION.md#shared-training-command).
+The namespace remains `tinyqwen_shared_preview`. New identities are
+`tinyqwen-pg094-hypergan-hndl-v6-cpu-fixture` and
+`tinyqwen-pg094-hypergan-hndl-v6-native-bf16`. Both retain attention q/k/v/o
+branches, rank 8/alpha 8 and one 128 x 4 routed bank. Old v2-v5 packets require
+their original source/environment; no packet is converted or relabelled.
 
-[Installation and contracts](docs/INTEGRATION.md) include exact Git install and
-wheel/sdist commands. [CORE-MIGRATION.json](CORE-MIGRATION.json) indexes the final
-pin migration. The original [extraction receipt](EXTRACTION-PROVENANCE.json) is
-preserved as historical evidence, with [later historical migration](MIGRATION.md)
-still tracked. No umbrella checkout is required for this product.
+The installed `tinyqwen-cpu-fixture` profile supports the shared
+`particle-slider plan` and `particle-slider train` dispatcher, periodic full
+checkpoints, exact continuation and raw/EMA export. It requires `dummy: true`;
+token rows can be carried in the session JSON. The native candidate uses the
+explicit response-session API and its separate installer, not this fixture profile.
 
-This remains a DRAFT candidate. Root coordinates tests, Claude actual-diff and
-RETURN review, final core review, Ada routing and merges. Main is still the
-minimal scaffold; no workflow, deployment, package-index release, model weights,
-GPU job or access/CI permission change is included.
-
-Learning-rate controls and preserved defaults: [LEARNING-RATES.md](LEARNING-RATES.md).
-
-The explicit v6 native BF16 source candidate is documented in [NATIVE-CANDIDATE.md](NATIVE-CANDIDATE.md). Official release fixture defaults remain unchanged.
+[Installation and contracts](docs/INTEGRATION.md) cover the current CPU package.
+[Learning-rate controls](LEARNING-RATES.md) preserve inherited defaults and bind
+resolved optimizer groups to full-state resume. [NATIVE-MIGRATION.json](NATIVE-MIGRATION.json)
+records the current source migration. The original extraction and historical
+core/LR migration receipts remain unchanged, with recovery instructions in
+[compatibility](compatibility/README.md). No umbrella checkout is required.

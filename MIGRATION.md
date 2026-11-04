@@ -26,13 +26,23 @@ wide-vector, original-model and native inference identity gates remain intact.
 The new repository's extraction PR must pass tests, Claude actual-diff review,
 fixes and RETURN review before landing. No merge or automatic release is implied.
 
-## Active final-core candidate
+## Historical v4 core migration
 
 The phase 1 receipt above describes commit `a2798264059c2b7c260ec98f3db8a21e41c8819c`.
-It is preserved, not rewritten. The current 0.4/v4 preview pins exact core ddb4142;
+It is preserved, not rewritten. That 0.4/v4 preview pins exact core ddb4142;
 its controlled source/config/documentation changes are indexed separately in
 `CORE-MIGRATION.json`. The old 0.2/v2 and 0.3/v3 locks and the v3 migration receipt
-are byte-preserved in `compatibility`. The current lock covers all 574 installed
+are byte-preserved in `compatibility`. Its lock covers all 574 installed
 source/data files across `particle_sliders` and `concept_slider_core`.
 Use each old product commit and its original core environment for old packets. No historical
 trainer, stable/default source, model license or saved checkpoint metadata changes.
+
+## Current v6 source profiles
+
+The current 0.6.0 package pins core `5d68473a098801ee1ab3ebbb12463daef51c6346`,
+with its controlled changes in `NATIVE-MIGRATION.json`. The v5 LR migration remains
+in `LR-MIGRATION.json`, and the exact v5 lock/receipt/product requirement are archived
+in `compatibility/preview-v5`. V6 separates the official PG0.9.4 CPU fixture from an
+explicit exact PG801 continuous-source native BF16 candidate. Read the current
+[installation guide](docs/INTEGRATION.md) and [native contract](NATIVE-CANDIDATE.md).
+Old source-bound packets always require their original immutable environment.
