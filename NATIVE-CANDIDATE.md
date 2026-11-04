@@ -33,3 +33,5 @@ CPU fixture inference continues to require no external runtime inputs.
 
 Native numerical/update/resume evidence is recorded separately from source
 admission. This candidate does not claim semantic-quality qualification.
+
+The exact native numerical check is recorded in [the validation receipt](docs/native-numerical-validation.json): two real updates, frozen/OFF identity, exact full-state fresh-process resume, and raw portable inference. It establishes no tuned rate or semantic quality.

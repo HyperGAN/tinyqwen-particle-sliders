@@ -4,7 +4,7 @@
   "core_commit": "5d68473a098801ee1ab3ebbb12463daef51c6346",
   "files": [
     {
-      "after_sha256": "5c1c191b99774d87afc9986e3ccab252eab62de52dc2a76cb67b1cf5eb7a2b0a",
+      "after_sha256": "a57835daca812207631fd3593e6b6fc7907d847f64f56ca65cf67aaf9bf82980",
       "before_sha256": null,
       "path": "NATIVE-CANDIDATE.md"
     },
@@ -27,6 +27,11 @@
       "after_sha256": "0a5deccfb8fa6bb086520839b7a33aec35bd66c82a53a96f59a470950d182749",
       "before_sha256": null,
       "path": "compatibility/preview-v5/sources.lock.json"
+    },
+    {
+      "after_sha256": "efd39e09eb693f513f7c9ec2b380251d57cf1e82e01e3abce420809c266b926d",
+      "before_sha256": null,
+      "path": "docs/native-numerical-validation.json"
     },
     {
       "after_sha256": "7399badb0541f12b29a8a5d062de75345fcf0a4451be25aa1f6d19a2aad32a13",

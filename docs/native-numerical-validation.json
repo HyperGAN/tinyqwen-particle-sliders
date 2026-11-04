@@ -1,0 +1,116 @@
+{
+  "actual_completed_updates": 2,
+  "core_commit": "5d68473a098801ee1ab3ebbb12463daef51c6346",
+  "core_source_closure_files": 575,
+  "cpu_installed_tests_passed": 93,
+  "default_lr_changed": false,
+  "evidence_reports": {
+    "continuous": {
+      "allocator_cap_gib": 3.25,
+      "data_sha256": "7399badb0541f12b29a8a5d062de75345fcf0a4451be25aa1f6d19a2aad32a13",
+      "deterministic": true,
+      "final_packet_sha256": "f5c3150c566a2db5a4f5737f7319dec9a2610cb647bf8e8e3003ee68a27eb459",
+      "frozen_host_exact": true,
+      "global_floor_gib": 5,
+      "gpu_uuid": "GPU-72c1b506-891d-b8bc-b353-e020585e1c47",
+      "harness_sha256": "07d26d31c8ad698512a697e082b750088d11a2ffc3d748333b28b6bcf6cfd52e",
+      "initial_game_sha256": "52785acb156d4110c53458e99c6c7100fa675765eb6440a0c4bb651913b76465",
+      "mode": "continuous",
+      "off_teacher_exact": true,
+      "peak_allocator_gib": 1.306081771850586,
+      "peak_reserved_gib": 1.36328125,
+      "pg": {
+        "penalty_input_domain": "continuous",
+        "pg_source_profile": "source-801ae1e-continuous-v1"
+      },
+      "process_cap_gib": 4,
+      "rates": {
+        "d": [
+          0.018
+        ],
+        "g": [
+          3e-06,
+          0.030000000000000002
+        ]
+      },
+      "schema": "tinyqwen-native-two-update-v1",
+      "sha256": "0a5a4fbd411be426a63a26d372ed71a5665e344e9d096440fa7236877e3fa7dc",
+      "source": "5d91b962b2494e5d897d71d73e6bc3339756e5bf",
+      "status": "passed",
+      "tf32": false,
+      "torch": "2.9.1+cu128"
+    },
+    "inference": {
+      "allocator_cap_gib": 3.25,
+      "data_sha256": "7399badb0541f12b29a8a5d062de75345fcf0a4451be25aa1f6d19a2aad32a13",
+      "deterministic": true,
+      "global_floor_gib": 5,
+      "gpu_uuid": "GPU-72c1b506-891d-b8bc-b353-e020585e1c47",
+      "harness_sha256": "07d26d31c8ad698512a697e082b750088d11a2ffc3d748333b28b6bcf6cfd52e",
+      "mode": "inference",
+      "peak_allocator_gib": 1.1660065650939941,
+      "peak_reserved_gib": 1.1875,
+      "pg": {
+        "penalty_input_domain": "continuous",
+        "pg_source_profile": "source-801ae1e-continuous-v1"
+      },
+      "process_cap_gib": 4,
+      "raw_portable_exact": true,
+      "schema": "tinyqwen-native-two-update-v1",
+      "sha256": "c3ae54dff68501c8f9f324ffa78ca9b2cc07e16ad27b18a0be01cb1f20cab87a",
+      "source": "5d91b962b2494e5d897d71d73e6bc3339756e5bf",
+      "status": "passed",
+      "tf32": false,
+      "torch": "2.9.1+cu128"
+    },
+    "resume": {
+      "allocator_cap_gib": 3.25,
+      "data_sha256": "7399badb0541f12b29a8a5d062de75345fcf0a4451be25aa1f6d19a2aad32a13",
+      "deterministic": true,
+      "final_packet_sha256": "f5c3150c566a2db5a4f5737f7319dec9a2610cb647bf8e8e3003ee68a27eb459",
+      "fresh_process_resume_exact": true,
+      "frozen_host_exact": true,
+      "global_floor_gib": 5,
+      "gpu_uuid": "GPU-72c1b506-891d-b8bc-b353-e020585e1c47",
+      "harness_sha256": "07d26d31c8ad698512a697e082b750088d11a2ffc3d748333b28b6bcf6cfd52e",
+      "initial_game_sha256": "f2f3525e075b3d2f98abf71e5641817b027db458a24115145129522b51c29231",
+      "mode": "resume",
+      "peak_allocator_gib": 1.282667636871338,
+      "peak_reserved_gib": 1.33984375,
+      "pg": {
+        "penalty_input_domain": "continuous",
+        "pg_source_profile": "source-801ae1e-continuous-v1"
+      },
+      "process_cap_gib": 4,
+      "rates": {
+        "d": [
+          0.018
+        ],
+        "g": [
+          3e-06,
+          0.030000000000000002
+        ]
+      },
+      "schema": "tinyqwen-native-two-update-v1",
+      "sha256": "4bfd7ca8aee4ded783451c17ddaaec196cd5f41788e9d1e61c9c075ff81cce8e",
+      "source": "5d91b962b2494e5d897d71d73e6bc3339756e5bf",
+      "status": "passed",
+      "tf32": false,
+      "torch": "2.9.1+cu128"
+    }
+  },
+  "historical_refusal": {
+    "optimizer_updates": 0,
+    "product_source": "7147c78e9286cf0f0afab14b08cb0fff665acc92",
+    "reason": "Common lifecycle refused combined response callback and evaluation_rows; fixed native binding and added actual CPU lifecycle regression"
+  },
+  "model_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+  "model_weight_sha256": "cd2a512003e2f9f3cd3c32a9c3573f820bb28c940f73c57b1ddaa983d9223eba",
+  "pg_commit": "801ae1ead8f88b88eca8f5398137e3e1bc01ad36",
+  "product_runtime_wheel_sdist_parity_files": 7,
+  "product_source_used": "5d91b962b2494e5d897d71d73e6bc3339756e5bf",
+  "product_wheel_sha256": "a5604176109ecbe0d661df1e55b1b59582fb51cbc22091daccdbddd45cefff42",
+  "qualification": "Actual native1024-wide BF16 numerical/update/resume/portable inference only; no semantic quality or tuned rate claim",
+  "replayed_resume_updates": 1,
+  "schema": "tinyqwen-native-numerical-validation-v1"
+}
