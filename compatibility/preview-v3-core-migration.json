@@ -1,0 +1,65 @@
+{
+  "artifact_policy": "v2 packets require their original source/environment; no relabel/conversion",
+  "cohort": "tinyqwen-pg094-hypergan-hndl-v3-cpu-fixture",
+  "core_commit": "a794e3b4a8813b012f2c4faa3da82b78d4a90214",
+  "files": [
+    {
+      "after_sha256": "ed9a820337c33f634d36ef29f1ffc251f74ac62bd6b31ba24c8073c4c9127dbb",
+      "before_sha256": "f2b2e84c8aee19f86809d57cee814c8e881c8384b003bd4fdf2c9e22421b6d41",
+      "path": "MIGRATION.md"
+    },
+    {
+      "after_sha256": "cd41977e3c56727c9242bead0338015b370f1ff59c79d27eb011026fbf441ea0",
+      "before_sha256": "1f7895800ac8da2a7403a0f17883eec7c9c84b4199f00ff0aa10f5b8f1f854a5",
+      "path": "README.md"
+    },
+    {
+      "after_sha256": "aa96d69648fab4e0849d6408c5c3c1cce04c5b034cca0d59d38498f5c549b7c2",
+      "before_sha256": null,
+      "path": "compatibility/README.md"
+    },
+    {
+      "after_sha256": "ef555f13511c0d1315ae2ffedadc0de3a860ab11737f896f00047080cb8f757f",
+      "before_sha256": null,
+      "path": "compatibility/preview-v2-source.lock.json"
+    },
+    {
+      "after_sha256": "53a5c132da594631d15626d846e327ebdf3363baae70fa917a0b14f15e98f6fc",
+      "before_sha256": "b2ac955300e99541505297c8e8e0c17b7f065aeb650b11cfb125f2ff4e9db858",
+      "path": "docs/INTEGRATION.md"
+    },
+    {
+      "after_sha256": "372f0d76ba51046b5ed093af5d2661b2829e9ac3fd6722dc4139fada557b6c99",
+      "before_sha256": "ad754753541429b304fa571a2bca6b53a0dc9829933588efd4fc79e227553135",
+      "path": "pyproject.toml"
+    },
+    {
+      "after_sha256": "51429a8f048f6203a593cea76a2acc836365457a7df021ee513349dd19e7147f",
+      "before_sha256": "54293f183d2eb7bd8b5e5a1755c2453fab85c6bccb1b3bae437ab03a0a73df82",
+      "path": "src/tinyqwen_shared_preview/binding.py"
+    },
+    {
+      "after_sha256": "30be37fb2aed143e418de6cfbeecab95061100bd1dab9c8c40715edd1e309afc",
+      "before_sha256": "ef555f13511c0d1315ae2ffedadc0de3a860ab11737f896f00047080cb8f757f",
+      "path": "src/tinyqwen_shared_preview/sources.lock.json"
+    },
+    {
+      "after_sha256": "fd672e958f598eb320690d26352da85fad4b64ff695b96af9279b06d7b777ca7",
+      "before_sha256": "901554f64a2c48ae9b0a7a2fd715059e68be94a1d6ea189327818ea72ad57aac",
+      "path": "tests/test_phase1_extraction.py"
+    },
+    {
+      "after_sha256": "97243ade6c4d27eaedf328aa22b350deb5f040a1ab549c1f9eb7b9bc0a456269",
+      "before_sha256": "9e614073a20e75bbfb0109aef4b7c2109c32167cb53fbccbeeb62bf800eb4747",
+      "path": "tests/test_tiny_llm_shared.py"
+    },
+    {
+      "after_sha256": "e5591c819238488873439def8cfbfe608951fd391902aad8eb0f0494becb0b53",
+      "before_sha256": null,
+      "path": "tools/refresh_source_lock.py"
+    }
+  ],
+  "predecessor_commit": "a2798264059c2b7c260ec98f3db8a21e41c8819c",
+  "product_version": "0.3.0",
+  "schema": "tinyqwen-final-core-migration-v1"
+}
