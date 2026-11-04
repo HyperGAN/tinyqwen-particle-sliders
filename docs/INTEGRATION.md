@@ -1,15 +1,15 @@
-# TinyQwen final modern-core preview
+# TinyQwen v6 integration
 
-The active `tinyqwen-shared-preview==0.4.0` distribution uses the v4 CPU fixture
-cohort and exact shared core commit `ddb41423bcefc1fe76cd94d0f9b367353b3ea137`.
-This changes source and lifecycle identities, not the model, training objective,
-attention targets, rank 8/alpha 8, or one 128 x 4 bank architecture.
+The active `tinyqwen-shared-preview==0.6.0` package uses exact core
+`5d68473a098801ee1ab3ebbb12463daef51c6346`. The default official ParticleGAN
+0.9.4 release/auto profile supports random CPU fixtures of width 16/32 and still
+refuses native width 1024 before model allocation.
 
-Native `Qwen/Qwen3-0.6B-Base` hidden width 1024 remains **blocked** by the reviewed
-release 0.9.4/auto continuous-vector gate. No weights are loaded, reshaped or
-converted to evade it. Root's synthetic CUDA qualification concerns the shared
-software fixture only; it grants no native TinyQwen, model-width or quality admission.
-Product qualification here uses random CPU fixtures with widths 16 and 32.
+A distinct explicit [native BF16 candidate](../NATIVE-CANDIDATE.md) admits the
+full 1024-wide Qwen3 last-hidden response only with exact PG801 continuous-source
+selection, local model assets and the declared CUDA numerical cohort. Its actual
+update/resume/portable inference proof does not establish semantic quality or a
+new default rate. The `tinyqwen-cpu-fixture` dispatcher profile remains a fixture.
 
 ## Exact origin and recursive source/data admission
 
@@ -18,19 +18,20 @@ or any umbrella initializer. Its host remains the extracted model-specific
 `backend.py`. The shared dependency is an immutable Git URL:
 
 ```text
-particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@ddb41423bcefc1fe76cd94d0f9b367353b3ea137#subdirectory=packages/particle-sliders-core
+particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@5d68473a098801ee1ab3ebbb12463daef51c6346#subdirectory=packages/particle-sliders-core
 ```
 
 Admission requires the exact PEP610 Git repository, commit, package subdirectory,
 noneditable installation and expected core version 0.12.0. A version-only install,
 an old core wheel or a different Git origin is refused. The recursive lock covers
-all 574 installed core source/data files across `particle_sliders` and
+all 575 installed core source/data files across `particle_sliders` and
 `concept_slider_core`, including LICENSE and nested data, and all
 product source/data files except the lock's own self-reference. Only generated
 `__pycache__` directories and `.pyc` files are excluded. Missing, changed or extra
 data fails closed. File indexes have canonical SHA256 identities.
 
-The unchanged shared gates additionally verify official ParticleGAN 0.9.4, clean
+The default shared gates verify official ParticleGAN 0.9.4; only the separately
+selected native source/domain pair admits exact PG801. Both profiles verify clean
 HyperGAN develop `5f368a3770cf5bdae0448995c9f76e29af8049f7`, HNDL 0.10.0 and their
 reviewed source closures. This product does not independently hash Torch or the
 standard library; the common game records runtime versions in its packet signature.
@@ -40,17 +41,19 @@ are independently compared with the approved lock.
 ## Reproducible CPU installation and artifacts
 
 Use a separate Python 3.11+ environment with a supported CPU Torch build. The
-current product checks use Python 3.11.17 and Torch 2.14.1+cpu.
+latest installed fixture checks used CPython 3.12 and Torch 2.9.1+cu128 with CUDA
+hidden; no GPU was initialized by those CPU checks.
 Do not combine this environment with archived preview or HNDL 0.8.2 environments.
 
 ```bash
+export CUDA_VISIBLE_DEVICES=''
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install 'setuptools==84.2.1' 'build==1.6.1' 'hatchling==1.33.0' 'pytest==9.2.0'
-python -m pip install 'torch==2.14.1+cpu' --index-url https://download.pytorch.org/whl/cpu
-python -m pip install --no-build-isolation 'particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@ddb41423bcefc1fe76cd94d0f9b367353b3ea137#subdirectory=packages/particle-sliders-core'
+python -m pip install 'setuptools==84.2.1' 'build==1.6.1' 'hatchling==1.33.0' 'pytest>=8,<10'
+python -m pip install 'torch==2.9.1' --index-url https://download.pytorch.org/whl/cpu
+python -m pip install --no-build-isolation 'particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@5d68473a098801ee1ab3ebbb12463daef51c6346#subdirectory=packages/particle-sliders-core'
 python -m build --no-isolation --sdist --wheel
-python -m pip install --no-deps --force-reinstall dist/tinyqwen_shared_preview-0.4.0-py3-none-any.whl
+python -m pip install --no-deps --force-reinstall dist/tinyqwen_shared_preview-0.6.0-py3-none-any.whl
 python -m pip check
 ```
 
@@ -66,7 +69,8 @@ python tools/refresh_source_lock.py --core-source /path/to/approved/core-checkou
 
 The script compares actually imported core bytes with immutable Git objects,
 regenerates the complete indexes coherently, and records the controlled changes
-in `CORE-MIGRATION.json`. `EXTRACTION-PROVENANCE.json` remains the original phase 1
+in `NATIVE-MIGRATION.json`. Historical `CORE-MIGRATION.json` and
+`LR-MIGRATION.json` remain unchanged. `EXTRACTION-PROVENANCE.json` remains the original phase 1
 receipt; it is not rewritten to imply that updated files are still byte-identical.
 
 ## Lifecycle, strengths and old packets
@@ -80,10 +84,10 @@ rows = [dict(neutral_ids=[1, 2], positive_ids=[1, 3]),
         dict(neutral_ids=[4, 5], positive_ids=[4, 6])]
 with open_response(config(fixture=True, fixture_width=16, steps=4, ema_decay=.9), rows=rows) as session:
     session.train()  # Bounded software fixture updates, not pretrained training.
-    session.checkpoint('/tmp/tinyqwen-v4-resume.pt')
-    session.export_inference('/tmp/tinyqwen-v4-native.pt', selection='ema')
+    session.checkpoint('/tmp/tinyqwen-v6-resume.pt')
+    session.export_inference('/tmp/tinyqwen-v6-native.pt', selection='ema')
     hidden = session.evaluate(strength=0)
-with open_inference('/tmp/tinyqwen-v4-native.pt', operation='response') as native:
+with open_inference('/tmp/tinyqwen-v6-native.pt', operation='response') as native:
     hidden = native.response(ids=[1, 2], strength=-1.)
 ```
 
@@ -94,9 +98,10 @@ linearly, and no quality calibration is claimed outside the training scale.
 Nonfinite strengths and responses are rejected. Inference and evaluation disable
 autograd; the shared training path retains adapter gradients.
 
-The new cohort is `tinyqwen-pg094-hypergan-hndl-v4-cpu-fixture`. Old v2/v3 training and
-inference packets require their original product/core environment and are refused
-by v4. Their exact locks and recovery instructions are preserved in `compatibility`.
+The default fixture cohort is `tinyqwen-pg094-hypergan-hndl-v6-cpu-fixture`.
+The explicit native cohort is `tinyqwen-pg094-hypergan-hndl-v6-native-bf16`.
+Old v2-v5 training and inference packets require their original product/core
+environment and are refused by v6. Their exact locks and recovery instructions are preserved in `compatibility`.
 No old metadata is edited or relabeled. Historical Rp/VIC trainers and checkpoints
 remain in the umbrella, as tracked in `MIGRATION.md`.
 
@@ -164,8 +169,9 @@ unattached real graphs before hooking or loading adapter values. The product-bou
 verified Linear16/SiLU/Linear1 graph remains unchanged. A canonical identity-bound
 shared vector critic is still a central API request, not a new import invented here.
 
-No core API, GAN mathematics, HNDL optimization, native response-domain admission,
-model license, workflow or access permission changes are made by this pin.
+The native source/domain extension is explicit and does not widen the default
+official-release guard. No product GAN mathematics, HNDL optimization, model
+license, workflow or access permission changes accompany these profiles.
 
 ## Installed conformance
 
@@ -176,16 +182,19 @@ mkdir -p /tmp/tinyqwen-installed-tests
 cp tests/test_*.py /tmp/tinyqwen-installed-tests/
 cp -R tests/fixtures /tmp/tinyqwen-installed-tests/
 TINYQWEN_EXPECT_INSTALLED=1 TINYQWEN_EXTRACTED_ROOT="$PWD" \
-TINYQWEN_WHEEL="$PWD/dist/tinyqwen_shared_preview-0.4.0-py3-none-any.whl" \
-TINYQWEN_SDIST="$PWD/dist/tinyqwen_shared_preview-0.4.0.tar.gz" \
+TINYQWEN_WHEEL="$PWD/dist/tinyqwen_shared_preview-0.6.0-py3-none-any.whl" \
+TINYQWEN_SDIST="$PWD/dist/tinyqwen_shared_preview-0.6.0.tar.gz" \
   python -m pytest -q /tmp/tinyqwen-installed-tests
 ```
 
 The suite covers real HyperGAN/HNDL execution, matched projection VJPs, actual
 shared BISPF penalty derivatives, updates, exact resume, raw/EMA/OFF inference,
-source/data/origin tamper refusal, native width refusal and lifecycle cleanup/retry.
+source/data/origin tamper refusal, default-release native width refusal, exact
+asset/data admission and lifecycle cleanup/retry.
 It also records the two remaining shared gaps above without claiming they are fixed.
 
-The executor has no `/dev/nvidia*`; GPU occupancy is unknown and GPU 0 is reserved.
-No product GPU job, pretrained model training, memory-fit, quality, deployment,
-package-index release, weight publication or checkpoint conversion is included.
+The v6 runtime passes 93 installed CPU checks, plus the separate actual native
+[numerical qualification](native-numerical-validation.json). Native CUDA work
+requires fresh physical-device admission, its own role lock and a measured
+memory cap; the package does not reserve hardware. These results establish no
+semantic quality, package-index release, weight publication or old-packet conversion.
