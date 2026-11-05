@@ -121,7 +121,7 @@ continuation. The separate native fresh-two versus one-plus-one and public RAW
 inference correctness proofs remain intact.
 
 The sole ranking and confirmation metric follows the
-[common evaluation protocol](https://github.com/HyperGAN/particle-sliders/blob/main/packages/particle-sliders-core/EVALUATION-PROTOCOL.md):
+[common evaluation protocol](https://github.com/HyperGAN/particle-sliders/blob/main/packages/particle-sliders-core/EVALUATION-AND-LR-SEARCH.md):
 cast student, teacher and neutral operands to FP64 **before subtraction**;
 pool declared positions and coordinates within each example; divide by that
 example's teacher-edit energy; then average examples equally. Freeze the
