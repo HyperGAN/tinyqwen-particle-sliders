@@ -10,8 +10,12 @@ random width16/32 model hosts with real PG/HG/HNDL updates, exact continuation,
 and public RAW/EMA inference. Native width1024 requires the published
 `release-0.9.5` profile and explicit `penalty_input_domain="continuous"`, plus the
 unchanged Qwen3 model revision, Torch2.9.1+cu128, Transformers5.3.0 and BF16 base.
-A declaration permits the native continuous-vector domain; it does not qualify a
-pretrained training run. The new PG0.9.5 learning rates remain **uncalibrated**.
+The fresh native PG0.9.5 response campaign now has a source-qualified measured
+recipe: **G 0.002 / D 0.054 / particle bank 0.03**, with a common 128-update
+horizon, development RAW relative SSE **0.7003497239527556** and four-example
+held-out confirmation **0.7981414033678553**. See the [learning-rate guide](LEARNING-RATES.md)
+and [numerical/source receipt](docs/native-lr-confirmation-pg095-20261105.json).
+The inherited package defaults remain unchanged.
 
 Use a new environment and new cohort/output paths. See [integration](docs/INTEGRATION.md)
 and [native admission](NATIVE-CANDIDATE.md). The fixture cohort is
@@ -19,9 +23,12 @@ and [native admission](NATIVE-CANDIDATE.md). The fixture cohort is
 `tinyqwen-pg095-hypergan-hndl-v7-native-bf16`. Attention targets, bank geometry,
 learning-rate defaults and numerical policies are unchanged.
 
-The [measured native recommendation](LEARNING-RATES.md) is explicitly historical:
-its old core5d68473 / PG801ae1e source and confirmed RAW score are not PG0.9.5
-calibration. Keep those packages/checkpoints in their original environment.
-`NATIVE-MIGRATION.json` remains unchanged; `PG095-MIGRATION.json` records this
-separate migration. The [v6 source lock and guides](compatibility/preview-v6/README.md)
-retain their original identity. V2 through v6 packets are never relabeled.
+Native training uses public `open_response(SessionConfig)`; the registered
+`tinyqwen-cpu-fixture` CLI is a CPU fixture route. The measured custom cohort and
+full recipe are documented in the [native API example](LEARNING-RATES.md#native-recipe-and-api).
+The earlier [PG801 confirmation](docs/native-lr-confirmation-20261105.json) remains
+historical and cannot be relabeled as PG0.9.5. Keep those packages/checkpoints in
+their original environment. `NATIVE-MIGRATION.json` remains unchanged;
+`PG095-MIGRATION.json` records this separate migration. The
+[v6 source lock and guides](compatibility/preview-v6/README.md) retain their
+original identity. V2 through v6 packets are never relabeled.
