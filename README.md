@@ -13,8 +13,13 @@ Two v6 profiles are deliberately separate:
   `801ae1ead8f88b88eca8f5398137e3e1bc01ad36` with the continuous domain API,
   exact local Qwen3-0.6B-Base assets, Torch 2.9.1+cu128 and Transformers 5.3.0.
   Actual native updates, exact resume and raw portable inference pass the
-  [numerical checks](docs/native-numerical-validation.json). This establishes
-  no semantic quality, generally tuned learning rate or published weights.
+  [numerical checks](docs/native-numerical-validation.json). A separate
+  [128-update LR campaign](LEARNING-RATES.md) confirmed **G 0.001 / D 0.054 /
+  bank 0.03** for the exact native hidden-response cohort: RAW relative SSE
+  **0.56147** on development and **0.40602** on four independent confirmation
+  examples. This is a scoped rate recommendation, with defaults unchanged;
+  no universal optimum, semantic-quality qualification or weight publication
+  is claimed.
 
 The namespace remains `tinyqwen_shared_preview`. New identities are
 `tinyqwen-pg094-hypergan-hndl-v6-cpu-fixture` and
@@ -29,8 +34,9 @@ token rows can be carried in the session JSON. The native candidate uses the
 explicit response-session API and its separate installer, not this fixture profile.
 
 [Installation and contracts](docs/INTEGRATION.md) cover the current CPU package.
-[Learning-rate controls](LEARNING-RATES.md) preserve inherited defaults and bind
-resolved optimizer groups to full-state resume. [NATIVE-MIGRATION.json](NATIVE-MIGRATION.json)
+[Learning-rate controls and the confirmed native recipe](LEARNING-RATES.md)
+preserve inherited defaults and bind resolved optimizer groups to full-state
+resume. [NATIVE-MIGRATION.json](NATIVE-MIGRATION.json)
 records the current source migration. The original extraction and historical
 core/LR migration receipts remain unchanged, with recovery instructions in
 [compatibility](compatibility/README.md). No umbrella checkout is required.

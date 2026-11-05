@@ -1,0 +1,228 @@
+{
+  "actual_optimizer_groups": {
+    "D": [
+      0.054
+    ],
+    "G": [
+      0.001
+    ],
+    "P": [
+      0.03
+    ]
+  },
+  "actual_optimizer_rate_float_hex": {
+    "D": "0x1.ba5e353f7ced9p-5",
+    "G": "0x1.0624dd2f1a9fcp-10",
+    "P": "0x1.eb851eb851eb8p-6"
+  },
+  "actual_optimizer_rates": {
+    "critic": [
+      0.054
+    ],
+    "generator": 0.001,
+    "particle_bank": 0.03
+  },
+  "configuration_overrides": {
+    "d_lr_mult": 54.0,
+    "lr": 0.001,
+    "prior_lr_mult": 30.0
+  },
+  "defaults_changed": false,
+  "evidence": {
+    "actual_fresh2_vs1plus1_native_proof_retained": true,
+    "campaign_execution_descriptor_sha256": "68b8232610d974b81ec3738f658547722c177c0b588c0abb22566737c6923088",
+    "checkpoint_file_sha256": "1242fd4d609b8339e939308aa371cdffe1d0a37058157f80136d346d533517bc",
+    "checkpoint_packet_sha256": "13ce2796efe76971091eeaa5f9b8e3d3b1acd3091890c9c8b4dd801e0504153a",
+    "confirmation_owned_embedding_guard_calls": 12,
+    "confirmation_report_sha256": "a6a8c1e5ffc17b81fac0fc9ff51a278bfe7a57aa97581baa482a64a9f505533b",
+    "confirmation_responses_sha256": "9175d7c1ef3c8d7382c81899ace9b3a45aa2464dee3f01d813b014326dc53d57",
+    "confirmation_training_constructors_used": false,
+    "controller_exit_code": 0,
+    "final_report_sha256": "c8431c1dc77468846b877cdb778f645862d7a76dbd1760b52eb6df0b0ef0783a",
+    "leader128_sha256": "cc738d162b4a2c20d57728cfd6c969225bb0bae667a92b96351650b8c584e174",
+    "owned_processes_reaped": true,
+    "prior_host_and_resource_terminal_history_retained": true,
+    "public_RAW_native_confirmation": true,
+    "raw_inference_file_sha256": "4f6264672c1f975b66addc91f23475bca233cfebf64bd37f7632129bd99d40bf",
+    "root_confirmed_evidence_sha256": "22a9f861210e80db6beaa3f3852d098e8ed64216ad1d2c655494a01dc2e29122",
+    "scientific_freeze_sha256": "84adcc8e98e88de9b30d8c64f6cffc93c99ab3cdffc68af9547e635746b074a7",
+    "selection32_sha256": "21c16b67f82636fc0e90d4103cf1ca87ceae575b31cac00602eb3e2dd7d76956",
+    "selection64_sha256": "bfc0de325722356c0a09817605cf3a76acbc4014f3c1a19d6838a70386befb7b",
+    "teacher_sha256": "439dfdb16e9a62627b7eef4071ffa88396e5abe3fc6edba42b1b973a91eae815"
+  },
+  "limits": "Best tested rate recipe for this exact source/model/data/BF16/HNDL/128-update response cohort. Not a universal optimum, an unmeasured longer-run default or a semantic-quality qualification. The documentation distributes no checkpoint, response tensors, model weights or paired corpus.",
+  "metric": {
+    "OFF": 1.0,
+    "aggregation": "Cast student, teacher and neutral operands to FP64 BEFORE subtraction; pool declared positions and coordinates within each example; divide by teacher-edit energy within example; average examples equally",
+    "confirmation_examples": 4,
+    "development": 0.5614657431858548,
+    "development_examples": 4,
+    "direction": "minimize",
+    "heldout_confirmation": 0.40601743965471515,
+    "name": "RAW teacher/student relative SSE",
+    "reversed_edit": 4.0,
+    "student_failure": "Never removes an example",
+    "teacher": 0.0,
+    "teacher_only_valid_set": "Fixed across candidates; no student-dependent exclusions",
+    "zero_energy": "undefined; no epsilon score"
+  },
+  "numerical": {
+    "CUDA": "12.8",
+    "GPU": "NVIDIA RTX A6000",
+    "python": "3.12.15",
+    "strict_caller_flags": {
+      "TF32": false,
+      "bf16_reduction": false,
+      "cublas": ":4096:8",
+      "cudnn_TF32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": true,
+      "cudnn_sdp": false,
+      "deterministic": true,
+      "efficient": false,
+      "flash": false,
+      "fp16_reduction": false,
+      "math_reduction": false,
+      "math_sdp": true,
+      "matmul_precision": "highest",
+      "overrides": {
+        "NVIDIA_TF32_OVERRIDE": null,
+        "TORCH_ALLOW_TF32_CUBLAS_OVERRIDE": null
+      },
+      "warn_only": false
+    },
+    "threads": 4,
+    "torch": "2.9.1+cu128",
+    "transformers": "5.3.0"
+  },
+  "recorded_at": "2026-11-05T03:57:20.113408+00:00",
+  "repository": "HyperGAN/tinyqwen-particle-sliders",
+  "schema": "particle-slider-measured-lr-recommendation-v1",
+  "scope": {
+    "alpha": 8,
+    "attention": "eager",
+    "base_precision": "bfloat16",
+    "batch": 2,
+    "cohort": "tinyqwen-fresh128-primary-v1-nativeBF16",
+    "completed_updates": 128,
+    "condition_width": 1028,
+    "confirmation_examples": 4,
+    "development_examples": 4,
+    "ema_decay": null,
+    "max_native_tokens": 128,
+    "native_response_shape": [
+      1,
+      1024
+    ],
+    "particle_bank_shape": [
+      128,
+      4
+    ],
+    "particle_bank_values": 512,
+    "preset": "bispf_optimized",
+    "rank": 8,
+    "schedule_horizon": 128,
+    "sealed_final_paired_data_sha256": "e696dd0a3de0e98be118a0af04eef3f73f04cf6bbcdf56d560c31df6b9d4ccce",
+    "seed": 7,
+    "selection": "raw",
+    "strength": 1.0,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj"
+    ],
+    "train_examples": 8,
+    "trainable_precision": "float32",
+    "working_paired_data_sha256": "ccc1714b2bed6db7192a966236c70e816a4d1d74938e9eb75b20a45135d7b133"
+  },
+  "selection": {
+    "counts": {
+      "known_old_duplicate_update_calls": 6,
+      "known_physical_completed_update_calls": 262,
+      "logical_completed_update_calls": 256,
+      "possibly_uncommitted_preempted_calls": "unknown; retained in archived execution history"
+    },
+    "finalists": {
+      "rank": [
+        {
+          "RAW_equal_example_relative_SSE": 0.6781853306671439,
+          "case": "coord-p03",
+          "checkpoint_sha256": "2368a516b1dc63cafd9df52eeef3148f4d175c40e772af06c7b9aa45447ed8d0",
+          "completed_steps": 64,
+          "job": "mid-coord-p03"
+        },
+        {
+          "RAW_equal_example_relative_SSE": 0.931899634380866,
+          "case": "coord-p09",
+          "checkpoint_sha256": "d9a745becafe1dd6934e2b66627d198df792cba28eeb16e5697ceae0a6167fff",
+          "completed_steps": 64,
+          "job": "mid-coord-p09"
+        }
+      ],
+      "updates": 64
+    },
+    "kind": "named/coupled recipes, not a G-only comparison",
+    "schedule_horizon": 128,
+    "screen": {
+      "all_finite_candidates_completed": true,
+      "rank": [
+        {
+          "RAW_equal_example_relative_SSE": 0.3147800560543701,
+          "case": "coord-p09",
+          "checkpoint_sha256": "35bc94a0809adc9de5080d977a5da523f0e1502abac17f52708b38342e5f5da7",
+          "completed_steps": 32,
+          "job": "screen-coord-p09"
+        },
+        {
+          "RAW_equal_example_relative_SSE": 0.34630424391493014,
+          "case": "coord-p03",
+          "checkpoint_sha256": "dce81a3064375a971f17caae617a5bef932198cf99f516e158e8515adbec592e",
+          "completed_steps": 32,
+          "job": "screen-coord-p03"
+        },
+        {
+          "RAW_equal_example_relative_SSE": 0.6666896911448938,
+          "case": "official",
+          "checkpoint_sha256": "c92c202761fe9fe9e3121401a0267d994512d1e4c859cba5e6bc9bf0a32eafcb",
+          "completed_steps": 32,
+          "job": "screen-official"
+        },
+        {
+          "RAW_equal_example_relative_SSE": 1.1625149932175598,
+          "case": "intermediate",
+          "checkpoint_sha256": "adc35593d3726c23ef4d0a01d7cd1ca426bedffba083518e8a3d744c5e9c81ee",
+          "completed_steps": 32,
+          "job": "screen-intermediate"
+        }
+      ],
+      "updates": 32
+    },
+    "sealed_confirmation": "Original independent four pairs opened only after immutable winner128",
+    "winner": {
+      "case": "coord-p03",
+      "updates": 128
+    }
+  },
+  "selection_rule": "Only the declared RAW primary ranks and confirms. Preservation/media/language diagnostics never veto. Endpoint displacement is diagnostic after the separate native mechanical proof.",
+  "source": {
+    "core_commit": "5d68473a098801ee1ab3ebbb12463daef51c6346",
+    "core_version": "0.12.0",
+    "default_official_release_auto_native1024_supported": false,
+    "hndl_version": "0.10.0",
+    "hypergan_commit": "5f368a3770cf5bdae0448995c9f76e29af8049f7",
+    "model": "Qwen/Qwen3-0.6B-Base",
+    "model_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+    "model_weights_sha256": "cd2a512003e2f9f3cd3c32a9c3573f820bb28c940f73c57b1ddaa983d9223eba",
+    "particlegan_commit": "801ae1ead8f88b88eca8f5398137e3e1bc01ad36",
+    "particlegan_version": "0.9.4",
+    "penalty_input_domain": "continuous",
+    "pg_source_profile": "source-801ae1e-continuous-v1",
+    "product_commit": "5d91b962b2494e5d897d71d73e6bc3339756e5bf",
+    "public_and_measured_runtime_tree_equal": true,
+    "public_base_commit": "fa19c943da52a009fe03d380cbf5871ec4971a7b",
+    "repository": "HyperGAN/tinyqwen-particle-sliders",
+    "runtime_package_git_tree": "afbeeeecbc4ab7d9b3a2aafe6fec704d7d606e95"
+  },
+  "status": "best_tested_heldout_confirmed"
+}

@@ -32,7 +32,9 @@ native tokenizer, with no projection/truncation of the 1024-wide response.
 bank. It provides eight training and eight evaluation pairs separate from training. These examples
 were used for the numerical checks and are not a sealed confirmation bank. It is not a
 semantic benchmark or proof of generated-token quality. LR defaults remain
-G 0.012 / D 0.018 / P 0.03 until an actual native rate comparison qualifies new values.
+G 0.012 / D 0.018 / P 0.03. A separate
+[confirmed 128-update recipe](LEARNING-RATES.md) recommends G 0.001 / D 0.054 /
+P 0.03 for its exact native hidden-response cohort; it does not change defaults.
 The existing three optional LR keys keep all core optimizer/update logic.
 
 Portable raw/EMA inference artifacts contain the construction/model/source
@@ -47,7 +49,10 @@ admission. This candidate does not claim semantic-quality qualification.
 
 The [native LR development comparison](docs/NATIVE-LR-DEVELOPMENT-20261104.md)
 completed a bounded coordinate bracket and one default-rate control at a common
-64-step budget. It found no rate nominee or consistent intended native language
-edit. Defaults remain unchanged and the final evaluation set remains sealed.
+64-step horizon. Its preservation/semantic-based no-nominee conclusion remains
+historical. The new [128-horizon sole-RAW campaign](LEARNING-RATES.md) selected a
+recipe and confirmed it on the original four sealed pairs after freezing its
+128-update endpoint. This supersedes that conclusion for the current RAW-response
+goal; the old packets/report remain unchanged and defaults remain unchanged.
 
-The exact native numerical check is recorded in [the validation receipt](docs/native-numerical-validation.json): two real updates, frozen/OFF identity, exact full-state fresh-process resume, and raw portable inference. It establishes no tuned rate or semantic quality.
+The exact native numerical check is recorded in [the validation receipt](docs/native-numerical-validation.json): two real updates, frozen/OFF identity, exact full-state fresh-process resume, and raw portable inference. It establishes mechanics; the separate LR confirmation supplies the scoped rate evidence without a semantic-quality claim.
