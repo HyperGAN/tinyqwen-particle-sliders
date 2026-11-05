@@ -1,42 +1,27 @@
-# TinyQwen particle sliders
+# TinyQwen shared ParticleGAN 0.9.5 cohort
 
-The current `tinyqwen-shared-preview==0.6.0` package pins shared core
-`5d68473a098801ee1ab3ebbb12463daef51c6346` and verifies its complete recursive
-source/data closure and immutable Git origin. Shared core and ParticleGAN own
-all game, optimizer and lifecycle mathematics.
+The current `tinyqwen-shared-preview==0.7.0` pins core0.13.0 at
+`3dd672a7f9b8c169daef90fd63e4bb42b9ddc423`. It explicitly imports
+`particle_sliders.pg095.ConditionalPG095` and verifies both installed core
+namespaces plus its own complete source/data closure and immutable Git origin.
 
-Two v6 profiles are deliberately separate:
+The v7 CPU fixture and native BF16 profiles are separate. The CPU fixture uses
+random width16/32 model hosts with real PG/HG/HNDL updates, exact continuation,
+and public RAW/EMA inference. Native width1024 requires the published
+`release-0.9.5` profile and explicit `penalty_input_domain="continuous"`, plus the
+unchanged Qwen3 model revision, Torch2.9.1+cu128, Transformers5.3.0 and BF16 base.
+A declaration permits the native continuous-vector domain; it does not qualify a
+pretrained training run. The new PG0.9.5 learning rates remain **uncalibrated**.
 
-- The default official ParticleGAN 0.9.4 release/auto profile supports random
-  CPU fixtures at widths 16 and 32 and still refuses native width 1024.
-- The explicit [native BF16 candidate](NATIVE-CANDIDATE.md) selects exact PG
-  `801ae1ead8f88b88eca8f5398137e3e1bc01ad36` with the continuous domain API,
-  exact local Qwen3-0.6B-Base assets, Torch 2.9.1+cu128 and Transformers 5.3.0.
-  Actual native updates, exact resume and raw portable inference pass the
-  [numerical checks](docs/native-numerical-validation.json). A separate
-  [128-update LR campaign](LEARNING-RATES.md) confirmed **G 0.001 / D 0.054 /
-  bank 0.03** for the exact native hidden-response cohort: RAW relative SSE
-  **0.56147** on development and **0.40602** on four independent confirmation
-  examples. This is a scoped rate recommendation, with defaults unchanged;
-  no universal optimum, semantic-quality qualification or weight publication
-  is claimed.
+Use a new environment and new cohort/output paths. See [integration](docs/INTEGRATION.md)
+and [native admission](NATIVE-CANDIDATE.md). The fixture cohort is
+`tinyqwen-pg095-hypergan-hndl-v7-cpu-fixture`; the native cohort is
+`tinyqwen-pg095-hypergan-hndl-v7-native-bf16`. Attention targets, bank geometry,
+learning-rate defaults and numerical policies are unchanged.
 
-The namespace remains `tinyqwen_shared_preview`. New identities are
-`tinyqwen-pg094-hypergan-hndl-v6-cpu-fixture` and
-`tinyqwen-pg094-hypergan-hndl-v6-native-bf16`. Both retain attention q/k/v/o
-branches, rank 8/alpha 8 and one 128 x 4 routed bank. Old v2-v5 packets require
-their original source/environment; no packet is converted or relabelled.
-
-The installed `tinyqwen-cpu-fixture` profile supports the shared
-`particle-slider plan` and `particle-slider train` dispatcher, periodic full
-checkpoints, exact continuation and raw/EMA export. It requires `dummy: true`;
-token rows can be carried in the session JSON. The native candidate uses the
-explicit response-session API and its separate installer, not this fixture profile.
-
-[Installation and contracts](docs/INTEGRATION.md) cover the current CPU package.
-[Learning-rate controls and the confirmed native recipe](LEARNING-RATES.md)
-preserve inherited defaults and bind resolved optimizer groups to full-state
-resume. [NATIVE-MIGRATION.json](NATIVE-MIGRATION.json)
-records the current source migration. The original extraction and historical
-core/LR migration receipts remain unchanged, with recovery instructions in
-[compatibility](compatibility/README.md). No umbrella checkout is required.
+The [measured native recommendation](LEARNING-RATES.md) is explicitly historical:
+its old core5d68473 / PG801ae1e source and confirmed RAW score are not PG0.9.5
+calibration. Keep those packages/checkpoints in their original environment.
+`NATIVE-MIGRATION.json` remains unchanged; `PG095-MIGRATION.json` records this
+separate migration. The [v6 source lock and guides](compatibility/preview-v6/README.md)
+retain their original identity. V2 through v6 packets are never relabeled.

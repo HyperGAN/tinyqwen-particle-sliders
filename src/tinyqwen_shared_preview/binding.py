@@ -19,7 +19,7 @@ from torch import nn
 from particle_sliders.fibo_hndl import HNDLParticleProjection, verified_builder
 from particle_sliders.inference import InferenceBackend, InferenceBinding
 from particle_sliders.lifecycle import Binding, SessionConfig, EvaluationRows
-from particle_sliders.pg094 import ConditionalPG094, PG_SOURCE_PROFILE, PG_VERSION, engine_options
+from particle_sliders.pg095 import ConditionalPG095, PG_SOURCE_PROFILE, PG_VERSION, engine_options
 from particle_sliders.pg09_audio import ARLastHiddenResponseAdapter, AudioRow, audio_conditions
 from particle_sliders.response import ResponseBackend, ResponseCapabilities
 
@@ -27,18 +27,18 @@ from . import backend as host_source
 from .backend import ATTN_CLASS_NAMES, LORA_LINEAR_NAMES, TinyLLMBackend, DummyTinyCausalLM
 
 NAME = 'tinyqwen-shared-preview'
-COHORT = 'tinyqwen-pg094-hypergan-hndl-v6-cpu-fixture'
-NATIVE_COHORT = 'tinyqwen-pg094-hypergan-hndl-v6-native-bf16'
-NATIVE_PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v6-native-bf16'
-NATIVE_PROFILE = 'source-801ae1e-continuous-v1'
-PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v6'
+COHORT = 'tinyqwen-pg095-hypergan-hndl-v7-cpu-fixture'
+NATIVE_COHORT = 'tinyqwen-pg095-hypergan-hndl-v7-native-bf16'
+NATIVE_PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v7-native-bf16'
+NATIVE_PROFILE = 'release-0.9.5'
+PROTOCOL = 'tinyqwen-neutral-to-positive-last-hidden-v7'
 CRITIC_GRAPH = '''joined = concat(response, condition, axis=1)
 features = linear(joined, 16, name="hidden")
 features = silu(features)
 linear(features, 1, name="score")
 '''
 ROOT = Path(__file__).parent
-CORE_COMMIT = '5d68473a098801ee1ab3ebbb12463daef51c6346'
+CORE_COMMIT = '3dd672a7f9b8c169daef90fd63e4bb42b9ddc423'
 
 
 def _digest(path):
@@ -69,9 +69,9 @@ def _core_sources():
 def _core_install_receipt(lock):
     """Require the approved immutable Git origin, not version-only/wheel aliasing."""
     dist = distribution('particle-sliders-core')
-    if (lock.get('core_commit') != CORE_COMMIT or lock.get('core_version') != '0.12.0'
+    if (lock.get('core_commit') != CORE_COMMIT or lock.get('core_version') != '0.13.0'
             or dist.version != lock['core_version']):
-        raise ValueError('TinyQwen v6 requires its exact approved core version/source identity')
+        raise ValueError('TinyQwen v7 requires its exact approved core version/source identity')
     try:
         provenance = json.loads(dist.read_text('direct_url.json') or '{}')
     except (ValueError, TypeError) as exc:
@@ -86,7 +86,7 @@ def _core_install_receipt(lock):
             and 'archive_info' not in provenance):
         return dict(kind='git', commit=CORE_COMMIT,
             repository=provenance['url'], subdirectory=provenance['subdirectory'])
-    raise ValueError('exact approved immutable core Git origin differs; v2 wheels are not v6')
+    raise ValueError('exact approved immutable core Git origin differs; v2 wheels are not v7')
 
 
 def verify_runtime(options=None):
@@ -102,7 +102,7 @@ def verify_runtime(options=None):
             or Path(host_source.__file__).resolve() != (ROOT / 'backend.py').resolve()):
         raise ValueError('TinyQwen preview imported product/host source closure differs')
     # The official PG closure is independently checked by the shared domain gate.
-    from particle_sliders.pg094 import validate_pg09_domain
+    from particle_sliders.pg095 import validate_pg09_domain
     domain = validate_pg09_domain((1, 1), response_domain='continuous_vector', **engine_options(options or {}))
     builder, identity = verified_builder()
     return builder, dict(identity, core_install=install,
@@ -282,7 +282,7 @@ class _Host(nn.Module):
 
 
 class TinyQwenResponse(ARLastHiddenResponseAdapter):
-    family = 'tinyqwen_native_last_hidden_shared_v6'
+    family = 'tinyqwen_native_last_hidden_shared_v7'
 
     def __init__(self, backend, slider, *, model_identity, engine=None):
         self.backend = backend
@@ -372,7 +372,7 @@ def validate(options):
 
 def _native(options, *, attach=True):
     # Fixed model/domain gate BEFORE a backend can load weights or attach hooks.
-    from particle_sliders.pg094 import validate_pg09_domain
+    from particle_sliders.pg095 import validate_pg09_domain
     cap = capabilities(options)
     validate_pg09_domain(cap.response_shape, response_domain=cap.response_domain,
                         **engine_options(options))
@@ -480,7 +480,7 @@ def prepare(options, *, rows=None):
         with torch.random.fork_rng(devices=[]):
             torch.random.default_generator.manual_seed(options.get('seed', 7) + 1)
             critic = TinyQwenHNDLCritic(width, conditions.shape[1], engine=options).to(next(native.network.parameters()).device)
-        game = ConditionalPG094(native, prepared, critic, conditions=conditions,
+        game = ConditionalPG095(native, prepared, critic, conditions=conditions,
             particles=native.particles, response_domain='continuous_vector',
             batch_size=options.get('batch', 2), total_steps=options.get('steps', 4),
             seed=options.get('seed', 7), recipe_overrides=rates, **engine_options(options))

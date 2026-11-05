@@ -1,3 +1,5 @@
+**Historical measured source only:** the confirmed recipe/results below use core5d68473 / PG801ae1e, not current PG0.9.5. The v7 package requires a new cohort and fresh calibration; see [current integration](docs/INTEGRATION.md).
+
 # Learning rates
 
 The best tested, independently confirmed recipe for the native Qwen3 BF16
