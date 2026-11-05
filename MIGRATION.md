@@ -1,3 +1,5 @@
+**Current migration:** v7/core0.13.0/PG0.9.5 is recorded separately in `PG095-MIGRATION.json`. The extraction/core/LR/native receipts and all v2–v6 packets remain historical.
+
 # Phase 1 extraction scope and later migration
 
 Source: public `HyperGAN/particle-sliders` commit

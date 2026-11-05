@@ -1,58 +1,20 @@
-# Explicit native TinyQwen candidate
+# PG0.9.5 native TinyQwen candidate: new v7 cohort
 
-The default dependency and CPU fixture keep official ParticleGAN 0.9.4 with its
-release/auto guard. Native width 1024 requires the separately selected exact
-PG 801ae1e continuous source profile, core 5d68473, Torch 2.9.1+cu128,
-Transformers 5.3.0, BF16 Qwen3-0.6B-Base at da87bfb, and eager attention.
-This creates new v6 fixture/native cohorts. Old v2/v3/v4/v5 packets retain their
-original immutable source/environment; none is converted or relabelled.
+Install `requirements-native-candidate.txt` in a fresh environment, then the
+0.7.0 product wheel with `--no-deps`. The requirements pin official
+`particlegan==0.9.5`, exact core3dd672a/core0.13.0 and Transformers5.3.0.
+Install Torch2.9.1+cu128 from its official CUDA wheel index separately.
 
-Use a separate CUDA environment. Install a CUDA 12.8 Torch build whose runtime
-reports exactly `2.9.1+cu128`, then select the explicit source pair:
+The native options require `fixture=False`, `base_precision="bfloat16"`, explicit
+`cuda:N`, local model/data paths, `pg_source_profile="release-0.9.5"` and
+`penalty_input_domain="continuous"`. No implicit hub load is allowed. Model
+revision `da87bfb608c14b7cf20ba1ce41287e8de496c0cd`, all eight model asset hashes,
+native last-hidden width1024, attention LoRA targets, routing/bank geometry and
+numerical guards remain unchanged. The released upstream continuous declaration
+admits the actual vector shape without reshaping it into categorical data.
 
-```bash
-python -m pip install -r requirements-native-candidate.txt
-python -m pip install --no-deps dist/tinyqwen_shared_preview-0.6.0-py3-none-any.whl
-```
-
-The requirements file pins core `5d68473a098801ee1ab3ebbb12463daef51c6346`, exact
-PG `801ae1ead8f88b88eca8f5398137e3e1bc01ad36` and Transformers 5.3.0. This
-installer differs from the official-release CPU environment. Runtime versions,
-source closures and exact local assets are checked again before construction.
-The eight exact local model assets are fully hashed before loading, including
-the 1,192,135,096-byte weights. No Hub download or remote model code is allowed.
-`model_dir`, explicit `device='cuda:0'`, paired-text `data_file`,
-`base_precision='bfloat16'`,
-`pg_source_profile='source-801ae1e-continuous-v1'`, and
-`penalty_input_domain='continuous'` are required for `config(fixture=False,...)`.
-Training and heldout rows are distinct paired text, tokenized by the exact
-native tokenizer, with no projection/truncation of the 1024-wide response.
-
-`docs/native-qualification-pairs.json` is a small fixed warmth/style diagnostic
-bank. It provides eight training and eight evaluation pairs separate from training. These examples
-were used for the numerical checks and are not a sealed confirmation bank. It is not a
-semantic benchmark or proof of generated-token quality. LR defaults remain
-G 0.012 / D 0.018 / P 0.03. A separate
-[confirmed 128-update recipe](LEARNING-RATES.md) recommends G 0.001 / D 0.054 /
-P 0.03 for its exact native hidden-response cohort; it does not change defaults.
-The existing three optional LR keys keep all core optimizer/update logic.
-
-Portable raw/EMA inference artifacts contain the construction/model/source
-identity and adapter tensors, without training data. Open using the matching
-native runtime and `open_inference(..., options=dict(model_dir=...,device='cuda:0'))`;
-response token IDs must belong to the exact tokenizer vocabulary. The model
-assets are rehashed and construction identity checked before hooks attach.
-CPU fixture inference continues to require no external runtime inputs.
-
-Native numerical/update/resume evidence is recorded separately from source
-admission. This candidate does not claim semantic-quality qualification.
-
-The [native LR development comparison](docs/NATIVE-LR-DEVELOPMENT-20261104.md)
-completed a bounded coordinate bracket and one default-rate control at a common
-64-step horizon. Its preservation/semantic-based no-nominee conclusion remains
-historical. The new [128-horizon sole-RAW campaign](LEARNING-RATES.md) selected a
-recipe and confirmed it on the original four sealed pairs after freezing its
-128-update endpoint. This supersedes that conclusion for the current RAW-response
-goal; the old packets/report remain unchanged and defaults remain unchanged.
-
-The exact native numerical check is recorded in [the validation receipt](docs/native-numerical-validation.json): two real updates, frozen/OFF identity, exact full-state fresh-process resume, and raw portable inference. It establishes mechanics; the separate LR confirmation supplies the scoped rate evidence without a semantic-quality claim.
+This is source/API readiness, not a PG0.9.5 native training or LR qualification.
+Old v6 native receipts and confirmed rate evidence belong to core5d68473 and
+PG801ae1e; retain their original environments and never restore them into v7.
+See [historical v6 native guide](compatibility/preview-v6/NATIVE-CANDIDATE.md).
+The original `NATIVE-MIGRATION.json` and its archived copy remain byte-identical.

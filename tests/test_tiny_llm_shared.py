@@ -228,7 +228,7 @@ def test_exact_split_resume_and_raw_ema_inference_without_training_rows(tmp_path
             with monkeypatch.context() as m:
                 m.setattr(product, 'prepare', lambda *a, **k: pytest.fail('training factory called'))
                 m.setattr(product, 'TinyQwenHNDLCritic', lambda *a, **k: pytest.fail('critic allocated'))
-                m.setattr(product, 'ConditionalPG094', lambda *a, **k: pytest.fail('game allocated'))
+                m.setattr(product, 'ConditionalPG095', lambda *a, **k: pytest.fail('game allocated'))
                 with open_inference(artifact, operation='response') as inference:
                     assert not hasattr(inference, 'game')
                     for v in (0.,.5,1.):
@@ -237,7 +237,7 @@ def test_exact_split_resume_and_raw_ema_inference_without_training_rows(tmp_path
                         inference.train()
 
 
-@pytest.mark.parametrize('option,value', [('pg_version','0.9.3'),('penalty_input_domain','continuous'),
+@pytest.mark.parametrize('option,value', [('pg_version','0.9.3'),('penalty_input_domain','categorical'),
     ('pg_source_profile','unqualified'),('base_precision','bfloat16'),('fixture','true'),('model','different')])
 def test_changed_profile_rejected_before_native_construction(option, value, monkeypatch):
     monkeypatch.setattr(product, '_native', lambda *a: pytest.fail('model allocated'))
@@ -342,7 +342,7 @@ def test_failed_graph_construction_and_failed_prepare_restore_borrowed_state(mon
     assert observed[0].slider._closed
 
 
-@pytest.mark.parametrize('core_file',['pg09.py','pg094_release.json','fibo_projection.hndl','LICENSE',
+@pytest.mark.parametrize('core_file',['pg09.py','pg095_release.json','fibo_projection.hndl','LICENSE',
                                        'concept_slider_core/__init__.py'])
 def test_core_and_builder_tamper_rejected_before_hooks(monkeypatch,core_file):
     # Alter only hash observations; no installed shared files are edited.
@@ -561,7 +561,7 @@ def test_product_imported_closure_tamper_rejected_before_native_load(name,monkey
 ])
 def test_exact_core_install_provenance_rejected_before_hooks(receipt,monkeypatch):
     class Dist:
-        version='0.12.0'
+        version='0.13.0'
         def read_text(self,name):
             assert name=='direct_url.json'
             return json.dumps(receipt)
@@ -577,12 +577,12 @@ def test_actual_exact_core_git_receipt_and_old_wheel_refusal(monkeypatch):
     assert receipt == dict(kind='git', commit=product.CORE_COMMIT,
         repository='https://github.com/HyperGAN/particle-sliders.git', subdirectory='packages/particle-sliders-core')
     class Dist:
-        version='0.12.0'
+        version='0.13.0'
         def read_text(self,name):
             return json.dumps(dict(url='file:///old-reviewed-core.whl', archive_info=dict(
                 hashes=dict(sha256='9afad3afc1f6c653a574074dc14f0da1f1c43975c31ca45c4eac049df0b0b4ad'))))
     monkeypatch.setattr(product,'distribution',lambda name:Dist())
-    with pytest.raises(ValueError,match='v2 wheels are not v6'):
+    with pytest.raises(ValueError,match='v2 wheels are not v7'):
         product._core_install_receipt(lock)
 
 
@@ -689,7 +689,7 @@ def test_unexpected_recursive_data_fails_closed_before_native_load(tmp_path,monk
         open_response(product.config(fixture=True),rows=ROWS)
 
 
-@pytest.mark.parametrize('version', ['v2', 'v3', 'v4', 'v5'])
+@pytest.mark.parametrize('version', ['v2', 'v3', 'v4', 'v5', 'v6'])
 def test_archived_packet_configuration_is_not_relabelled_or_prepared(tmp_path,monkeypatch,version):
     with session() as current:
         packet=current.checkpoint()
@@ -834,3 +834,14 @@ def test_outer_factory_failure_retains_notes_but_has_no_public_cleanup_owner(mon
     assert not hasattr(primary,'cleanup_owner')
     assert len(seen[0]._checkpointing)==1 and seen[0].slider._closed
     seen[0].close()
+
+
+def test_official_pg095_native_width_domain_and_old_entrypoint_refusal():
+    from particle_sliders.pg095 import PG_VERSION, PG_SOURCE_PROFILE, validate_pg09_domain
+    from particle_sliders.pg094 import ConditionalPG094
+    assert (PG_VERSION, PG_SOURCE_PROFILE) == ('0.9.5', 'release-0.9.5')
+    domain = validate_pg09_domain((1, 1024), response_domain='continuous_vector',
+                                 pg_source_profile=PG_SOURCE_PROFILE, penalty_input_domain='continuous')
+    assert domain['penalty_input_domain'] == 'continuous'
+    with pytest.raises(RuntimeError, match='pinned|rebind'):
+        ConditionalPG094(None, None, None)

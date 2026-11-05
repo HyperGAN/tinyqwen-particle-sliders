@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tinyqwen-shared-preview"
-version = "0.6.0"
+version = "0.7.0"
 description = "TinyQwen shared ParticleGAN / HyperGAN / HNDL fixture and explicit native candidate"
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.11,<3.15"
-dependencies = ["particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@5d68473a098801ee1ab3ebbb12463daef51c6346#subdirectory=packages/particle-sliders-core"]
+dependencies = ["particle-sliders-core[hypergan-hndl] @ git+https://github.com/HyperGAN/particle-sliders.git@3dd672a7f9b8c169daef90fd63e4bb42b9ddc423#subdirectory=packages/particle-sliders-core"]
 
 [project.entry-points."particle_sliders.response_backends"]
 tinyqwen-shared-preview = "tinyqwen_shared_preview.binding:BACKEND"
@@ -24,7 +24,7 @@ tinyqwen-cpu-fixture = "tinyqwen_shared_preview.training_profile:TRAINING_PROFIL
 packages = ["src/tinyqwen_shared_preview"]
 
 [tool.hatch.build.targets.sdist]
-include = ["/src", "/tests", "/docs", "/compatibility", "/tools", "/README.md", "/LICENSE", "/MIGRATION.md", "/EXTRACTION-PROVENANCE.json", "/CORE-MIGRATION.json", "/LR-MIGRATION.json", "/NATIVE-MIGRATION.json", "/NATIVE-CANDIDATE.md", "/requirements-native-candidate.txt", "/LEARNING-RATES.md", "/pyproject.toml", "/.gitignore"]
+include = ["/src", "/tests", "/docs", "/compatibility", "/tools", "/README.md", "/LICENSE", "/MIGRATION.md", "/EXTRACTION-PROVENANCE.json", "/CORE-MIGRATION.json", "/LR-MIGRATION.json", "/NATIVE-MIGRATION.json", "/PG095-MIGRATION.json", "/NATIVE-CANDIDATE.md", "/requirements-native-candidate.txt", "/LEARNING-RATES.md", "/pyproject.toml", "/.gitignore"]
 
 [tool.hatch.metadata]
 allow-direct-references = true

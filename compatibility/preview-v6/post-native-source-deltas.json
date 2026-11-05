@@ -1,0 +1,25 @@
+{
+  "schema": "tinyqwen-pre-pg095-public-source-deltas-v1",
+  "predecessor_commit": "c0a2da58c71162f8110c78443b4fea91faf7aaf0",
+  "note": "Public source changes after the historical native migration receipt, independently bound to actual predecessor Git blobs; historical receipt not rewritten.",
+  "files": [
+    {
+      "path": "README.md",
+      "after_native_receipt_sha256": "2e663da2e1ea6a65c4a247730201f85993c6f098eb47b8b2ca8ba8ca69f11772",
+      "pre_pg095_actual_sha256": "127cc99ae2848b01127ae8e4d14ad042ff8d9df84b34a884736c7208ea8024e6",
+      "pre_pg095_git_blob": "6aefbc303093dfc00b30a59d245fd260b85957c7"
+    },
+    {
+      "path": "LEARNING-RATES.md",
+      "after_native_receipt_sha256": "e1c35b0bc25a29526028699208c5dc7de3f850ca137dff095529f142486a1fa1",
+      "pre_pg095_actual_sha256": "497a65bf3bbf4e80344d72d900a5463df6929c4b78a597d0370075a80d2cbd91",
+      "pre_pg095_git_blob": "b37e6fddaf0d721ec19278c9870b29afd08119a0"
+    },
+    {
+      "path": "NATIVE-CANDIDATE.md",
+      "after_native_receipt_sha256": "67f3b69f23293a51eeca2f9d7f2ba8aa05196eaf3042f2b98392f7c7e1343bba",
+      "pre_pg095_actual_sha256": "e37c44d3ed94cc44c15cd3cd8f89bbbdf7875a816777082c9b411f3893a277dd",
+      "pre_pg095_git_blob": "6549448c8f430356b1402a04bef6239e90c28350"
+    }
+  ]
+}
