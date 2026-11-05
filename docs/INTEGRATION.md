@@ -16,16 +16,20 @@ product package; source checks precede model mutation. The official PG wheel
 source manifest independently validates all ParticleGAN Python bytes.
 
 The common CLI/profile and Python API share `ConditionalPG095`. A minimal
-fixture configuration is `binding.config(fixture=True, steps=4, batch=2)`.
-Existing `open_response` checkpoint/resume and `open_inference` RAW/EMA response
-APIs are unchanged; they now create separate v7 source/cohort identities.
+fixture configuration is
+`binding.config(fixture=True, steps=4, batch=2, ema_decay=None)`.
+Use `open_response` checkpoint/resume and `open_inference` with RAW weights;
+all new sessions disable EMA, and exports explicitly select `raw`. The APIs
+create separate v7 source/cohort identities. Historical EMA compatibility does
+not recommend averaging, comparison or EMA selection for new runs.
 Use explicit held-out evaluation rows when measuring an LR. Do not treat random
 CPU fixture scores as native calibration.
 
 For [native BF16 staging](../NATIVE-CANDIDATE.md), use
 `pg_source_profile="release-0.9.5", penalty_input_domain="continuous"`.
 The native model, precision, rank, bank and loader requirements remain unchanged;
-no pretrained PG0.9.5 training or exact native continuation has been measured.
+the fresh [native measurement](../LEARNING-RATES.md) now records actual
+PG0.9.5 training, exact native continuation and RAW-only confirmation.
 
 `tools/refresh_source_lock.py --core-source /clean/exact/core3dd-checkout`
 regenerates v7 indexes from Git objects and the actual installed core. It writes
