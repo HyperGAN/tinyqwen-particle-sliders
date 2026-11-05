@@ -29,7 +29,9 @@ The measurement used local `Qwen/Qwen3-0.6B-Base` assets at revision
 attention, FP32 HNDL attention q/k/v/o branches at rank 8/alpha 8, and one real
 128 × 4 routed bank. The response is the full 1024-wide last hidden vector with at most 128 input
 tokens; training and RAW evaluation use strength +1. Batch size was 2, seed 7, EMA was
-disabled, and the preset was `bispf_optimized` throughout.
+disabled, and the preset was `bispf_optimized` throughout. Keep
+`ema_decay=None` for new sessions and select `raw` for all exports and inference;
+do not add EMA averaging, comparisons or selection.
 
 The seven installed runtime package files, including the source lock, were
 byte-identical to public product commit
